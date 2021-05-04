@@ -1,4 +1,4 @@
-# OpenBIS dropboxes written in Java
+# OpenBIS dropboxes written in Java/Groovy
 In development experimental ETL procedures written in Java for data registration in openBIS.
 
 ## Package
