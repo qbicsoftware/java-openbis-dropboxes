@@ -3,7 +3,19 @@ In development experimental ETL procedures written in Java for data registration
 
 ## Package
 
-Clone the package with `git clone git@github.com:qbicsoftware/java-openbis-dropboxes.git` and run `mvn clean package`. The compiled Java binaries are located under the projects root folder under `./target/<project-name>.jar`
+Clone the package with 
+
+```
+git clone git@github.com:qbicsoftware/java-openbis-dropboxes.git
+```
+
+and run 
+
+```
+mvn clean package
+```
+
+The compiled Java binaries are located under the projects root folder under `./target/<project-name>.jar`
 
 ## Deployment in openBIS
 
