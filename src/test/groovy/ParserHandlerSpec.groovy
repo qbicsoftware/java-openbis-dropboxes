@@ -15,7 +15,7 @@ import java.nio.file.Paths
 class ParserHandlerSpec extends Specification {
 
     def "Creating an parser handler instance of a list of parsers shall throw no exception"() {
-        given:
+        given: "an implementation of the DatasetParser interface"
         DatasetParser<String> failingParser = new DatasetParser<String>() {
             @Override
             String parseFrom(Path path) throws DataParserException, DatasetValidationException {
@@ -23,10 +23,10 @@ class ParserHandlerSpec extends Specification {
             }
         }
 
-        when:
+        when: "an instance of the ParserHandler is created"
         ParserHandler handler = new ParserHandler([failingParser])
 
-        then:
+        then: "no exceptions are thrown"
         noExceptionThrown()
     }
 

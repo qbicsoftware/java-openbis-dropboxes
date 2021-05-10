@@ -36,35 +36,34 @@ class ParserHandler {
     }
 
     /**
-     * Tries to parse a given file structure into a dataset.
+     * <p>Tries to parse a given file structure into a dataset.<p>
      *
-     * The return type is not known during compile time, because
+     * <p>The return type is not known during compile time, because
      * this method brute forces a file structure with different
-     * available parsers, to determine the dataset type.
+     * available parsers, to determine the dataset type.</p>
      *
-     * The return <code>Optional</code> object is empty, if no registered parser was able to
-     * determine the dataset successfully.
+     * <p>The return <code>Optional</code> object is empty, if no registered parser was able to
+     * determine the dataset successfully. The dataset type is determined during runtime.</p>
      *
-     * If the return <code>Optional</code> contains a value, you need to determine the type by
-     * Java's explicit type conversion in order to make use of static typing in any
-     * downstream code that consumes dataset objects.
+     * <p>In case the return <code>Optional</code> contains a value, you need to determine the type
+     * by Java's explicit type conversion in order to make use of static typing in any
+     * downstream code that consumes dataset objects.</p>
      *
      * @param root the top level path of the directory with the file structure to be parsed.
-     * @return empty, if no parser was able to parse the file structure to a dataset. Else, the
-     * object contains the dataset, that needs to be determined during runtime.
+     * @return the parsed dataset. Optional.empty(), if no parser was able to parse the file structure to a dataset.
      * @since 1.0.0
      */
     Optional<?> parseFrom(Path root) {
-        Iterator dataSetIterator = dataSetParserList.iterator()
+        Iterator<DataSetParser> dataSetIterator = dataSetParserList.iterator()
         Optional<?> result = Optional.empty()
         while (dataSetIterator.hasNext()) {
             try {
-                def parser = dataSetIterator.next()
+                DataSetParser parser = dataSetIterator.next()
                 result = Optional.of(parser.parseFrom(root))
             } catch (DataParserException e) {
-                // log it maybe
+                // log it !
             } catch (DatasetValidationException e){
-                // log it maybe
+                // log it !
             }
             if (result.isPresent())
                 return result
