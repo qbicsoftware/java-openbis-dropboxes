@@ -1,8 +1,8 @@
 package life.qbic.registration
 
 import life.qbic.datasets.parsers.DataParserException
-import life.qbic.datasets.parsers.DataSetParser
-import life.qbic.datasets.parsers.DataSetValidationException
+import life.qbic.datasets.parsers.DatasetParser
+import life.qbic.datasets.parsers.DatasetValidationException
 
 import java.nio.file.Path
 
@@ -22,15 +22,15 @@ class ParserHandler {
     to be determined by a given file structure, the parser available in
     this list will be used to try the actual parsing.
      */
-    private final List<DataSetParser<?>> dataSetParserList
+    private final List<DatasetParser<?>> dataSetParserList
 
     /**
      * Creates an instance of a parser handler object with a given list of
-     * available {@link DataSetParser}.
-     * @param listOfParsers a collection of {@link DataSetParser} to use for brute force parsing
+     * available {@link DatasetParser}.
+     * @param listOfParsers a collection of {@link DatasetParser} to use for brute force parsing
      * of file structures.
      */
-    ParserHandler(List<DataSetParser<?>> listOfParsers) {
+    ParserHandler(List<DatasetParser<?>> listOfParsers) {
         Objects.requireNonNull(listOfParsers, "List must not be null.")
         dataSetParserList = listOfParsers
     }
@@ -63,7 +63,7 @@ class ParserHandler {
                 result = Optional.of(parser.parseFrom(root))
             } catch (DataParserException e) {
                 // log it maybe
-            } catch (DataSetValidationException e){
+            } catch (DatasetValidationException e){
                 // log it maybe
             }
             if (result.isPresent())

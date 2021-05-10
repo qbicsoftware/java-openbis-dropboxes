@@ -1,6 +1,6 @@
 import life.qbic.datasets.parsers.DataParserException
-import life.qbic.datasets.parsers.DataSetParser
-import life.qbic.datasets.parsers.DataSetValidationException
+import life.qbic.datasets.parsers.DatasetParser
+import life.qbic.datasets.parsers.DatasetValidationException
 import life.qbic.registration.ParserHandler
 import spock.lang.Specification
 
@@ -16,9 +16,9 @@ class ParserHandlerSpec extends Specification {
 
     def "Creating an parser handler instance of a list of parsers shall throw no exception"() {
         given:
-        DataSetParser<String> failingParser = new DataSetParser<String>() {
+        DatasetParser<String> failingParser = new DatasetParser<String>() {
             @Override
-            String parseFrom(Path path) throws DataParserException, DataSetValidationException {
+            String parseFrom(Path path) throws DataParserException, DatasetValidationException {
                 throw new DataParserException("Cannot determine dataset type.")
             }
         }
@@ -33,9 +33,9 @@ class ParserHandlerSpec extends Specification {
 
     def "If no parser is able to determine the dataset type, the optional return shall be empty"() {
         given: "a parser that fails always"
-        DataSetParser<String> failingParser = new DataSetParser<String>() {
+        DatasetParser<String> failingParser = new DatasetParser<String>() {
             @Override
-            String parseFrom(Path path) throws DataParserException, DataSetValidationException {
+            String parseFrom(Path path) throws DataParserException, DatasetValidationException {
                 throw new DataParserException("Cannot determine dataset type.")
             }
         }
@@ -53,9 +53,9 @@ class ParserHandlerSpec extends Specification {
 
     def "If a parser is able to determine the dataset type, the optional return contain the parsed dataset"() {
         given: "a simple parser that will determine the dataset"
-        DataSetParser<String> simpleParser = new DataSetParser<String>() {
+        DatasetParser<String> simpleParser = new DatasetParser<String>() {
             @Override
-            String parseFrom(Path path) throws DataParserException, DataSetValidationException {
+            String parseFrom(Path path) throws DataParserException, DatasetValidationException {
                 "Text dataset"
             }
         }
