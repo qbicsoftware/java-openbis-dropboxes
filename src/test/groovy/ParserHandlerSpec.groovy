@@ -1,7 +1,7 @@
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DatasetValidationException
-import life.qbic.registration.ParserHandler
+import life.qbic.registration.handler.ParserHandler
 import spock.lang.Specification
 
 import java.nio.file.Path
