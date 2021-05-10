@@ -54,11 +54,11 @@ class ParserHandler {
      * @since 1.0.0
      */
     Optional<?> parseFrom(Path root) {
-        Iterator<DataSetParser> dataSetIterator = dataSetParserList.iterator()
+        Iterator<DatasetParser> dataSetIterator = dataSetParserList.iterator()
         Optional<?> result = Optional.empty()
         while (dataSetIterator.hasNext()) {
             try {
-                DataSetParser parser = dataSetIterator.next()
+                DatasetParser parser = dataSetIterator.next()
                 result = Optional.of(parser.parseFrom(root))
             } catch (DataParserException e) {
                 // log it !
