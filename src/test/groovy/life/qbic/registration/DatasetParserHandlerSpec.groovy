@@ -73,6 +73,4 @@ class DatasetParserHandlerSpec extends Specification {
         assert result.get() as String == "Text dataset"
 
     }
-
-
 }
