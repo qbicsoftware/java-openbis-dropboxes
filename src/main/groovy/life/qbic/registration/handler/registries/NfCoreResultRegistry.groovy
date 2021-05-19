@@ -1,6 +1,7 @@
 package life.qbic.registration.handler.registries
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
+import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
 import groovy.json.JsonSlurper
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
@@ -75,12 +76,23 @@ class NfCoreResultRegistry implements Registry {
 
         register(transaction, sampleIds, analysisType)
     }
+
     /*
     Does the final registration of the dataset in openBIS.
      */
     private void register(IDataSetRegistrationTransactionV2 transaction,
                           List<String> sampleIds,
                           AnalysisType analysisType) {
+        // Will contain the openBIS samples which data served as input data for
+        // the pipeline run
+        List<ISample> parentSamples = []
+        for (String sampleId : sampleIds) {
+            ISample sample = transaction.getSampleForUpdate(sampleId)
+            parentSamples.add(sample)
+        }
+
+
+
 
     }
 
