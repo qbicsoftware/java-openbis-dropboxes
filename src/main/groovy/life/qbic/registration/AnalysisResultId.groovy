@@ -5,7 +5,7 @@ import groovy.transform.EqualsAndHashCode
 /**
  * <p>Analysis run identifier.</p>
  *
- * <p>Fill analysis run identifiers have the common form like:</p>
+ * <p>Full analysis run identifiers have the common form like:</p>
  *
  * <ul>
  *     <li>QTESTR1</li>
@@ -22,7 +22,7 @@ import groovy.transform.EqualsAndHashCode
  * @since 1.0.0
  */
 @EqualsAndHashCode(includeFields = true)
-class AnalysisResultId {
+class AnalysisResultId implements Increment<AnalysisResultId> {
 
     private final Integer resultId
 
@@ -38,7 +38,7 @@ class AnalysisResultId {
      * @since 1.0.0
      */
     static AnalysisResultId parseFrom(String analysisResultId) throws NumberFormatException {
-        def matcher = analysisResultId =~ /R+(\d*)/
+        def matcher = analysisResultId =~ /R+(\d*)$/
         if (matcher) {
             def currentId = Integer.parseInt((String) matcher[0][1])
             new AnalysisResultId(currentId)
@@ -69,6 +69,7 @@ class AnalysisResultId {
     /**
      * Creates a new {@link AnalysisResultId} instance with an incremented running number of +1.
      * @return An incremented {@link AnalysisResultId} object.
+     * @since 1.0.0
      */
     AnalysisResultId nextId() {
         new AnalysisResultId(this.id + 1)
