@@ -35,4 +35,15 @@ class SampleIdSpec extends Specification {
         id.runningNumber == 10
         id.projectCode == "QREST"
     }
+
+    def "Creating a sample id object from a text containing no valid ids must return an empty object"() {
+        given: "A text with two invalid sample ids"
+        def invalidIds = " QREST01 or maybe QTEST"
+
+        when: "We parse a sample id from the text"
+        Optional<SampleId> sampleId = SampleId.from(invalidIds)
+
+        then: "The id must be empty"
+        !sampleId.isPresent()
+    }
 }
