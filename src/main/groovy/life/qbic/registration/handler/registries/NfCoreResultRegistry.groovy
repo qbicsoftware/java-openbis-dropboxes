@@ -83,6 +83,7 @@ class NfCoreResultRegistry implements Registry {
     private void register(IDataSetRegistrationTransactionV2 transaction,
                           List<String> sampleIds,
                           AnalysisType analysisType) {
+        // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
         List<ISample> parentSamples = []
@@ -91,9 +92,23 @@ class NfCoreResultRegistry implements Registry {
             parentSamples.add(sample)
         }
 
+        // 2. Get existing analysis run results
 
+        // 3. Get existing experiments
 
+        // 4. Create new run result sample
 
+        // 5. Create new experiment
+
+        // 6. Set parent samples as parents in the newly created run result sample
+
+        // 7. Set experiment for run result sample
+
+        // 8. Create new openBIS dataset
+
+        // 9. Attach result data to dataset
+
+        // Finish transaction
     }
 
     /*
