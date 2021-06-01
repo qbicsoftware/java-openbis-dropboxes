@@ -1,5 +1,7 @@
 package life.qbic.registration
 
+import groovy.transform.EqualsAndHashCode
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -8,6 +10,7 @@ import java.util.regex.Pattern
  *
  * @since 1.0.0
  */
+@EqualsAndHashCode
 class SampleId {
 
     /**
@@ -43,7 +46,7 @@ class SampleId {
 
         Matcher matcher = text =~ QBIC_SAMPLE_BARCODE_SCHEMA
         if (matcher.find()) {
-            sampleId = Optional.of(new SampleId(matcher[0]))
+            sampleId = Optional.of(new SampleId(matcher[0] as String))
         }
         return sampleId
     }

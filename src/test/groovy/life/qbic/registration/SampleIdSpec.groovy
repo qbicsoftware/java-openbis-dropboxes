@@ -46,4 +46,19 @@ class SampleIdSpec extends Specification {
         then: "The id must be empty"
         !sampleId.isPresent()
     }
+
+    def "Ensure equality check works"() {
+        given: "Two sample Ids with the same content, and one with different content"
+        def oneSampleId = SampleId.from("QTEST001AE")
+        def sameSampleId = SampleId.from("QTEST001AE")
+        def otherSampleId = SampleId.from("QVARA001AE")
+
+        when: "we compare them"
+        boolean sameSamplesEqual = oneSampleId.equals(sameSampleId)
+        boolean differentSamplesEqual = otherSampleId.equals(oneSampleId)
+
+        then: "must evaluate as such during comparison"
+        sameSamplesEqual
+        !differentSamplesEqual
+    }
 }
