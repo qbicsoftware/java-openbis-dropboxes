@@ -2,6 +2,7 @@ package life.qbic.registration.handler.registries
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
+import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
 import groovy.json.JsonSlurper
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
@@ -93,7 +94,8 @@ class NfCoreResultRegistry implements Registry {
         }
 
         // 2. Get existing analysis run results
-
+        SearchService searchService = transaction.getSearchService()
+        searchService.listExperiments()
         // 3. Get existing experiments
 
         // 4. Create new run result sample
