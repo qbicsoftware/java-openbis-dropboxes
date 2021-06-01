@@ -22,4 +22,17 @@ class SampleIdSpec extends Specification {
         id.runningNumber == 1
         id.projectCode == "QTEST"
     }
+
+    def "Creating a sample id object from a text containing two valid ids must return the first valid sampleId"() {
+        given: "A text with two valid sample ids"
+        def validId = " QREST010BB or maybe QTEST001AE"
+
+        when: "We parse a sample id from the text"
+        Optional<SampleId> sampleId = SampleId.from(validId)
+
+        then: "The id must be the first valid occurrence of a sample id in the text"
+        SampleId id = sampleId.get()
+        id.runningNumber == 10
+        id.projectCode == "QREST"
+    }
 }
