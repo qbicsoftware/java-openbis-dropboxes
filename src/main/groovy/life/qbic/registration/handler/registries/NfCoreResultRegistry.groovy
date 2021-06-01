@@ -3,10 +3,14 @@ package life.qbic.registration.handler.registries
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
 import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
+import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
+import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
+import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import groovy.json.JsonSlurper
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
 import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
 
@@ -75,7 +79,11 @@ class NfCoreResultRegistry implements Registry {
             throw new RegistrationException("Could not determine analysis type for run ${runId}.")
         })
 
-        register(transaction, sampleIds, analysisType)
+        try {
+            register(transaction, sampleIds, analysisType)
+        } catch (RuntimeException e) {
+            new RegistrationException(e.message)
+        }
     }
 
     /*
@@ -87,16 +95,27 @@ class NfCoreResultRegistry implements Registry {
         // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
+        List<SampleId> sampleIdList = validateSampleIds(sampleIds)
+
         List<ISample> parentSamples = []
-        for (String sampleId : sampleIds) {
-            ISample sample = transaction.getSampleForUpdate(sampleId)
+        for (SampleId sampleId : sampleIdList) {
+            ISample sample = transaction.getSampleForUpdate(sampleId.toString())
             parentSamples.add(sample)
         }
 
         // 2. Get existing analysis run results
-        SearchService searchService = transaction.getSearchService()
-        searchService.listExperiments()
+        ISearchService searchService = transaction.getSearchService()
+        SearchCriteria searchCriteria = new SearchCriteria()
+        searchCriteria.addMatchClause(
+                SearchCriteria.MatchClause.createAnyFieldMatch("${sampleIdList[0].projectCode}R")
+        )
+
+        List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteria)
+
+
         // 3. Get existing experiments
+
+        searchService.listExperiments(sampleIdList[0].projectCode)
 
         // 4. Create new run result sample
 
@@ -111,6 +130,16 @@ class NfCoreResultRegistry implements Registry {
         // 9. Attach result data to dataset
 
         // Finish transaction
+    }
+
+    private List<SampleId> validateSampleIds(List<String> sampleIdList) throws RuntimeException {
+        def convertedSampleIds = []
+        for(String sampleId : sampleIdList) {
+            def convertedId = SampleId.from(sampleId).orElseThrow( {
+                throw new RuntimeException("$sampleId does not seem to contain a valid sample id.")})
+            convertedSampleIds.add(convertedId)
+        }
+        return convertedSampleIds
     }
 
     /*

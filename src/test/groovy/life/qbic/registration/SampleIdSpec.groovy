@@ -61,4 +61,15 @@ class SampleIdSpec extends Specification {
         sameSamplesEqual
         !differentSamplesEqual
     }
+
+    def "Ensure toString method produces expected format"() {
+        given: "A sample id"
+        def sampleId = SampleId.from("QTEST001AE")
+
+        when: "we call the toString() method"
+        String result = sampleId.get().toString()
+
+        then: "we verify the format to be as expected"
+        result == "QTEST001AE"
+    }
 }

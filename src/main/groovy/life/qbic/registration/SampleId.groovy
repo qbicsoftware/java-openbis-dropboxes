@@ -31,6 +31,11 @@ class SampleId {
     final Integer runningNumber
 
     /**
+     * <p>The checksum part of the sample identifier, which are the two last characters.</p>
+     */
+    final String checksum
+
+    /**
      * <p>Parses a sample identifier from a provided text.</p>
      *
      * <p>If the provided text provides more than one valid sample identifier, only the first one
@@ -57,6 +62,23 @@ class SampleId {
     private SampleId(String sampleId) {
         this.projectCode = sampleId[0..4]
         this.runningNumber = Integer.parseInt(sampleId[5..7])
+        this.checksum = sampleId[8..-1]
+    }
+
+    /**
+     * <p>Provides a formatted String representation of a sample identifier.</p>
+     *
+     * <p>For example an object with project = 'QTEST', a running number = 1 and a
+     * checksum of 'AE', the String representation is:</p>
+     *
+     * <p align=center><strong>QTEST001AE</strong><p>
+     *
+     * @return
+     */
+    @Override
+    String toString() {
+        def runningNumber = runningNumber.toString().padLeft(3, '0')
+        return "${projectCode}${runningNumber}${checksum}"
     }
 
 }

@@ -147,6 +147,12 @@
     </dependency>
     <dependency>
       <groupId>life.qbic</groupId>
+      <artifactId>openbis-api-etl</artifactId>
+      <version>18.06.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>life.qbic</groupId>
       <artifactId>hotdeploy-plugins</artifactId>
       <version>13.01.0</version>
     </dependency>
