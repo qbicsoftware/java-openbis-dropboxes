@@ -7,7 +7,7 @@ package life.qbic.registration
  *
  * <ul>
  *     <li>QTESTE1</li>
- *     <li>Q001E12</li>
+ *     <li>Q0011E12</li>
  *     <li>...</li>
  * </ul>
  *
