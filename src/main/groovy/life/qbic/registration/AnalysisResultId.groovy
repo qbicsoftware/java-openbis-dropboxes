@@ -8,8 +8,8 @@ import groovy.transform.EqualsAndHashCode
  * <p>Full analysis run identifiers have the common form like:</p>
  *
  * <ul>
- *     <li>QTESTR1</li>
- *     <li>Q001R12</li>
+ *     <li>QTESTE10R1</li>
+ *     <li>Q0011E12R12</li>
  *     <li>...</li>
  * </ul>
  *
