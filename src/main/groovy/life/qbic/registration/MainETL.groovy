@@ -18,7 +18,7 @@ import java.nio.file.Path
 @Log4j2
 class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
-    static List<DatasetParser<?>> listOfParsers = new ArrayList<>(Arrays.asList(new BioinformaticAnalysisParser(), new NanoporeParser()))
+    static List<DatasetParser<?>> listOfParsers = [new BioinformaticAnalysisParser(), new NanoporeParser()] as List<DatasetParser<?>>
 
     @Override
     public void process(IDataSetRegistrationTransactionV2 transaction) {
@@ -37,16 +37,18 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(relevantData)
-        if(result.isPresent()) {
-            Optional<Registry> registry = RegistrationHandler.getRegistryFor(result)
-            if(registry.isPresent()) {
-                registry.get().executeRegistration(transaction)
-            } else {
-                log.error("No registry found for data structure.")
-            }
-        } else {
-            log.error("Data structure could not be parsed.")
-        }
+
+        Object concreteResult = result.orElseThrow({
+            throw new Exception("Data structure could not be parsed.")
+        })
+
+        Registry registry =  RegistrationHandler.getRegistryFor(concreteResult).orElseThrow(
+                {
+                    throw new Exception("No registry found for data structure.")
+                }
+        )
+
+        registry.executeRegistration(transaction)
     }
 }
 
