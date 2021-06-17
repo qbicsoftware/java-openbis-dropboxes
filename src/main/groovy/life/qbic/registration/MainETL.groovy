@@ -16,7 +16,9 @@ import groovy.util.logging.Log4j2
 import java.nio.file.Path
 
 @Log4j2
-class MainETL extends AbstractJavaDataSetRegistrationDropboxV2{
+class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
+
+    static List<DatasetParser<?>> listOfParsers = new ArrayList<>(Arrays.asList(new BioinformaticAnalysisParser(), new NanoporeParser()))
 
     @Override
     public void process(IDataSetRegistrationTransactionV2 transaction) {
@@ -33,23 +35,18 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2{
             }
         }   
         
-        List<DatasetParser<?>> listOfParsers = new ArrayList<>()
-        
-        listOfParsers.add(new NanoporeParser())
-        listOfParsers.add(new BioinformaticAnalysisParser())
-        
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(relevantData)
-        Optional<Registry> registry = RegistrationHandler.getRegistryFor(result)
-        
-        if(registry.isPresent()) {
-            registry.get().executeRegistration(transaction)
+        if(result.isPresent()) {
+            Optional<Registry> registry = RegistrationHandler.getRegistryFor(result)
+            if(registry.isPresent()) {
+                registry.get().executeRegistration(transaction)
+            } else {
+                log.error("No registry found for data structure.")
+            }
         } else {
-            log.error("No registry found for data structure.")
+            log.error("Data structure could not be parsed.")
         }
-        //ISample sample = transaction.getSampleForUpdate("/TEST28/QXEGD018AW")
-        //IDataSet dataSet = transaction.createNewDataSet()
-        //dataSet.setSample(sample)
-        //transaction.moveFile(transaction.getIncoming().getAbsolutePath(), dataSet as IDataSet)
     }
 }
+
