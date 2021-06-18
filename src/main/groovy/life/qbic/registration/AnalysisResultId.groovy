@@ -2,6 +2,8 @@ package life.qbic.registration
 
 import groovy.transform.EqualsAndHashCode
 
+import javax.validation.constraints.NotNull
+
 /**
  * <p>Analysis run identifier.</p>
  *
@@ -22,7 +24,7 @@ import groovy.transform.EqualsAndHashCode
  * @since 1.0.0
  */
 @EqualsAndHashCode(includeFields = true)
-class AnalysisResultId implements Increment<AnalysisResultId>, Comparable {
+class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<AnalysisResultId> {
 
     private final Integer resultId
 
@@ -91,25 +93,19 @@ class AnalysisResultId implements Increment<AnalysisResultId>, Comparable {
     }
 
     @Override
-    int compareTo(Object o) {
-        switch (o) {
-            case null:
-                throw new NullPointerException()
-            case !AnalysisResultId:
-                throw new ClassCastException("Cannot cast class ${o.class.name} to ${AnalysisResultId.name}.")
-            case AnalysisResultId:
-                return compareAnalysisId(o as AnalysisResultId)
-        }
+    int compareTo(@NotNull AnalysisResultId o) {
+        return compareAnalysisId(o)
     }
 
     private int compareAnalysisId(AnalysisResultId otherId) {
         int difference = this.id - otherId.id
         int result = 0
+        println difference
         switch (difference) {
-            case difference > 0:
+            case { it > 0 }:
                 result = 1
                 break
-            case difference < 0:
+            case { it < 0 }:
                 result = -1
                 break
         }
