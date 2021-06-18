@@ -94,6 +94,7 @@ class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<Analys
 
     @Override
     int compareTo(@NotNull AnalysisResultId o) {
+        Objects.requireNonNull(o)
         return compareAnalysisId(o)
     }
 

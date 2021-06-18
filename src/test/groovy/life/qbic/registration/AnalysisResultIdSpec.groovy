@@ -69,4 +69,15 @@ class AnalysisResultIdSpec extends Specification {
         then: "the returned value must be 0"
         result == 0
     }
+
+    def "Comparing with null throws null pointer exception"() {
+        given: "An id"
+        def id = AnalysisResultId.parseFrom("QTESTR10")
+
+        when: "we compare it with null"
+        id.compareTo(null)
+
+        then: "a NPE must be thrown"
+        thrown(NullPointerException)
+    }
 }
