@@ -10,6 +10,7 @@ import groovy.json.JsonSlurper
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
 import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.registration.AnalysisResultId
 import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
@@ -111,7 +112,11 @@ class NfCoreResultRegistry implements Registry {
         )
 
         List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteria)
-
+        List<AnalysisResultId> existingAnalysisRunIds = []
+        for (ISampleImmutable sample in existingAnalysisResultSamples) {
+            AnalysisResultId id = AnalysisResultId.parseFrom(sample.code)
+            existingAnalysisRunIds.add(id)
+        }
 
         // 3. Get existing experiments
 
