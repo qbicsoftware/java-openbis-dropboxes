@@ -1,8 +1,10 @@
 package life.qbic.registration.handler.registries
 
+import ch.systemsx.cisd.etlserver.registrator.api.v1.IExperiment
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
 import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
+import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v1.IExperimentImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
@@ -10,7 +12,12 @@ import groovy.json.JsonSlurper
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
 import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
+import life.qbic.datamodel.dtos.projectmanagement.ProjectIdentifier
+import life.qbic.datamodel.dtos.projectmanagement.ProjectSpace
 import life.qbic.registration.AnalysisResultId
+import life.qbic.registration.Context
+import life.qbic.registration.ExperimentId
 import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
@@ -48,6 +55,8 @@ class NfCoreResultRegistry implements Registry {
     private final NfCorePipelineResult pipelineResult
 
     private Path datasetRootPath
+
+    private Context context
 
     /**
      * <p>Creates an instance of a nf-core pipeline result registry, that
@@ -87,6 +96,14 @@ class NfCoreResultRegistry implements Registry {
         }
     }
 
+    private static Context createContextFromSample(ISample sample) {
+
+        ProjectCode projectCode = new ProjectCode(sample.project.code)
+        ProjectSpace projectSpace = new ProjectSpace(sample.space)
+        return new Context(projectCode: projectCode, projectSpace: projectSpace,
+                projectIdentifier: new ProjectIdentifier(projectSpace, projectCode))
+    }
+
     /*
     Does the final registration of the dataset in openBIS.
      */
@@ -103,26 +120,35 @@ class NfCoreResultRegistry implements Registry {
             ISample sample = transaction.getSampleForUpdate(sampleId.toString())
             parentSamples.add(sample)
         }
+        this.context = createContextFromSample(parentSamples[0])
 
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
-        SearchCriteria searchCriteria = new SearchCriteria()
-        searchCriteria.addMatchClause(
+        SearchCriteria searchCriteriaResultSamples = new SearchCriteria()
+
+        searchCriteriaResultSamples.addMatchClause(
                 SearchCriteria.MatchClause.createAnyFieldMatch("${sampleIdList[0].projectCode}R")
         )
 
-        List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteria)
+        List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteriaResultSamples)
         List<AnalysisResultId> existingAnalysisRunIds = []
         for (ISampleImmutable sample in existingAnalysisResultSamples) {
             AnalysisResultId id = AnalysisResultId.parseFrom(sample.code)
             existingAnalysisRunIds.add(id)
         }
+        existingAnalysisRunIds = existingAnalysisRunIds.sort()
 
         // 3. Get existing experiments
-
-        searchService.listExperiments(sampleIdList[0].projectCode)
+        List<IExperimentImmutable> existingExperiments = searchService.listExperiments(sampleIdList[0].projectCode) as List<IExperimentImmutable>
+        List<ExperimentId> existingExperimentIds = []
+        for (IExperimentImmutable experiment in existingExperiments) {
+            ExperimentId id = ExperimentId.parseFrom(experiment.experimentIdentifier)
+            existingExperimentIds.add(id)
+        }
+        existingExperimentIds = existingExperimentIds.sort()
 
         // 4. Create new run result sample
+        transaction.createNewSample()
 
         // 5. Create new experiment
 
