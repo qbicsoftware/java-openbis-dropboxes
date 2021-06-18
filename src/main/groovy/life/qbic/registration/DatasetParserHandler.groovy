@@ -16,7 +16,7 @@ import java.nio.file.Path
  *
  * @since 1.0.0
  */
-class ParserHandler {
+class DatasetParserHandler {
     /*
     This list contains all registered dataset parser. When the dataset needs
     to be determined by a given file structure, the parser available in
@@ -30,7 +30,7 @@ class ParserHandler {
      * @param listOfParsers a collection of {@link DatasetParser} to use for brute force parsing
      * of file structures.
      */
-    ParserHandler(List<DatasetParser<?>> listOfParsers) {
+    DatasetParserHandler(List<DatasetParser<?>> listOfParsers) {
         Objects.requireNonNull(listOfParsers, "List must not be null.")
         dataSetParserList = listOfParsers
     }

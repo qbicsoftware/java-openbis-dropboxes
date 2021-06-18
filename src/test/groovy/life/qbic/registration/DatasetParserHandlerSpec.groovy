@@ -1,7 +1,8 @@
+package life.qbic.registration
+
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DatasetValidationException
-import life.qbic.registration.ParserHandler
 import spock.lang.Specification
 
 import java.nio.file.Path
@@ -12,7 +13,7 @@ import java.nio.file.Paths
  *
  * @since 1.0.0
  */
-class ParserHandlerSpec extends Specification {
+class DatasetParserHandlerSpec extends Specification {
 
     def "Creating an parser handler instance of a list of parsers shall throw no exception"() {
         given: "an implementation of the DatasetParser interface"
@@ -23,8 +24,8 @@ class ParserHandlerSpec extends Specification {
             }
         }
 
-        when: "an instance of the ParserHandler is created"
-        ParserHandler handler = new ParserHandler([failingParser])
+        when: "an instance of the DatasetParserHandler is created"
+        DatasetParserHandler handler = new DatasetParserHandler([failingParser])
 
         then: "no exceptions are thrown"
         noExceptionThrown()
@@ -41,7 +42,7 @@ class ParserHandlerSpec extends Specification {
         }
 
         and: "a parser handler with that failing parser"
-        ParserHandler handler = new ParserHandler([failingParser])
+        DatasetParserHandler handler = new DatasetParserHandler([failingParser])
 
         when: "we trigger the parser"
         Optional result = handler.parseFrom(Paths.get("./"))
@@ -61,7 +62,7 @@ class ParserHandlerSpec extends Specification {
         }
 
         and: "a parser handler with that simple parser"
-        ParserHandler handler = new ParserHandler([simpleParser])
+        DatasetParserHandler handler = new DatasetParserHandler([simpleParser])
 
         when: "we trigger the parser"
         Optional result = handler.parseFrom(Paths.get("./"))
@@ -72,6 +73,4 @@ class ParserHandlerSpec extends Specification {
         assert result.get() as String == "Text dataset"
 
     }
-
-
 }
