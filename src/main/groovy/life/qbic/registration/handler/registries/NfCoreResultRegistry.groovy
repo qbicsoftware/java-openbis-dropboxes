@@ -1,6 +1,5 @@
 package life.qbic.registration.handler.registries
 
-import ch.systemsx.cisd.etlserver.registrator.api.v1.IExperiment
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v1.IExperimentImmutable
