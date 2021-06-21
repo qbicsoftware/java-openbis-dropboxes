@@ -6,9 +6,6 @@ import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v1.IExperimentIm
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
-import groovy.json.JsonSlurper
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.uri.UriBuilder
 import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
 import life.qbic.datamodel.dtos.projectmanagement.ProjectIdentifier
