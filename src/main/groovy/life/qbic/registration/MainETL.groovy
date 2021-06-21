@@ -1,18 +1,14 @@
 package life.qbic.registration
 
-import java.io.File
-import java.util.ArrayList
-import java.util.List
 import ch.systemsx.cisd.etlserver.registrator.api.v2.AbstractJavaDataSetRegistrationDropboxV2
-import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSet
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
-import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
+import groovy.util.logging.Log4j2
 import life.qbic.datasets.parsers.DatasetParser
-import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.registration.handler.RegistrationHandler
 import life.qbic.registration.handler.Registry
-import life.qbic.utils.*
-import groovy.util.logging.Log4j2
+import life.qbic.utils.BioinformaticAnalysisParser
+import life.qbic.utils.NanoporeParser
+
 import java.nio.file.Path
 
 @Log4j2
