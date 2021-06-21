@@ -20,19 +20,11 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
     ] as List<DatasetParser<?>>
 
     @Override
-    public void process(IDataSetRegistrationTransactionV2 transaction) {
+    void process(IDataSetRegistrationTransactionV2 transaction) {
         String incomingPath = transaction.getIncoming().getAbsolutePath()
         String incomingName = transaction.getIncoming().getName()
 
         Path relevantData = new File(incomingPath, incomingName).toPath()
-        
-        //TODO
-        //do something with datahandler/datamover metadata like checksums
-        for (File file : new File(incomingPath).listFiles()) {
-            if (!file.getPath().equals(relevantData)) {
-                //TODO
-            }
-        }   
         
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(relevantData)
