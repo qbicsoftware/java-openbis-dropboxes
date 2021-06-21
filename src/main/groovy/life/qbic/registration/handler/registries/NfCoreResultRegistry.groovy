@@ -31,14 +31,12 @@ import java.nio.file.Paths
  * general information about quality control and there is information about the sample codes that
  * reflect the input datasets for the analysis.</p>
  * <br>
+ * <p>Since this registry makes some authenticated API requests against the Workflow Management System
+ * Nextflow Tower, this registry expects to</p>
  *
  * @since 1.0.0
  */
 class NfCoreResultRegistry implements Registry {
-
-    // TODO: Hardcoded for know, we need some nicer way to ingest these properties (i.e. via beans)
-    private static final String NEXTFLOW_API_URL =
-            "http://cfgateway1.zdv.uni-tuebingen.de/api/"
 
     private enum AnalysisType {
         RNA_SEQ,
@@ -64,6 +62,8 @@ class NfCoreResultRegistry implements Registry {
 
     private Context context
 
+    private final NfTower nfTower
+
     /**
      * <p>Creates an instance of a nf-core pipeline result registry, that
      * is able to register pipeline output from nf-core bioinformatic pipelines in openBIS.</p>
@@ -76,6 +76,7 @@ class NfCoreResultRegistry implements Registry {
      */
     NfCoreResultRegistry(NfCorePipelineResult pipelineResult) {
         this.pipelineResult = pipelineResult
+        this.nfTower = new NfTower()
     }
 
     /**
@@ -252,23 +253,9 @@ class NfCoreResultRegistry implements Registry {
     Returns the analysis type.
      */
     private Optional<AnalysisType> getAnalysisType(String runId) {
-        String pipelineName = getPipelineName(runId)
+        String pipelineName = nfTower.getPipelineName(runId).orElseThrow({
+            throw new RegistrationException("Could not determine pipeline name from Nextflow Tower for run id $runId")})
         return determineAnalysisTypeFrom(pipelineName)
-    }
-
-    /*
-    Returns the pipeline name based on the Nextflow Tower workflow id
-     */
-    private String getPipelineName(String workflowId) {
-        RxHttpClient httpClient = RxHttpClient.create(NEXTFLOW_API_URL as URL)
-        String query = UriBuilder.of("${NEXTFLOW_API_URL}/workflow/{workflowId}")
-                .expand(Collections.singletonMap("workflowId", workflowId))
-                .toString()
-        def result = httpClient.toBlocking().retrieve(query)
-        def content = new JsonSlurper().parseText(result) as Map
-        // This should get the Github pipeline repo slug
-        // like 'nf-core/rnaseq'
-        return (content.get("workflow") as Map).get("repository") as String
     }
 
     /*
