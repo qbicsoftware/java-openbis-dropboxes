@@ -51,6 +51,7 @@ class NfCoreResultRegistry implements Registry {
     private static final Map<String, AnalysisType> PIPELINE_TO_ANALYSIS
     static {
         PIPELINE_TO_ANALYSIS.put("nf-core/rnaseq", AnalysisType.RNA_SEQ)
+        PIPELINE_TO_ANALYSIS.put("nf-core/sarek", AnalysisType.VARIANT_CALLING)
     }
 
     private final NfCorePipelineResult pipelineResult

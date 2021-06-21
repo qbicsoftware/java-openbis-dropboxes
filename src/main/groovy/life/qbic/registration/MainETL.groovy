@@ -30,6 +30,9 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         Optional<?> result = handler.parseFrom(relevantData)
 
         Object concreteResult = result.orElseThrow({
+            handler.getObservedExceptions().each {
+                log.error(it.message, it.getStackTrace().join("\n"))
+            }
             throw new Exception("Data structure could not be parsed.")
         })
 

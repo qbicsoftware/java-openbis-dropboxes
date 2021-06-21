@@ -25,6 +25,11 @@ class DatasetParserHandler {
     private final List<DatasetParser<?>> dataSetParserList
 
     /**
+     * Provides access to all observed exceptions during the prude force parsing attempt
+     */
+    final List<Exception> observedExceptions
+
+    /**
      * Creates an instance of a parser handler object with a given list of
      * available {@link DatasetParser}.
      * @param listOfParsers a collection of {@link DatasetParser} to use for brute force parsing
@@ -33,6 +38,7 @@ class DatasetParserHandler {
     DatasetParserHandler(List<DatasetParser<?>> listOfParsers) {
         Objects.requireNonNull(listOfParsers, "List must not be null.")
         dataSetParserList = listOfParsers
+        observedExceptions = []
     }
 
     /**
@@ -61,9 +67,9 @@ class DatasetParserHandler {
                 DatasetParser parser = dataSetIterator.next()
                 result = Optional.of(parser.parseFrom(root))
             } catch (DataParserException e) {
-                // log it !
+                observedExceptions << e
             } catch (DatasetValidationException e){
-                // log it !
+                observedExceptions << e
             }
             if (result.isPresent())
                 return result
