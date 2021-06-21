@@ -3,7 +3,6 @@ package life.qbic.registration.handler.registries
 import ch.systemsx.cisd.etlserver.registrator.api.v1.IExperiment
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
-import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v1.IExperimentImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
@@ -45,6 +44,14 @@ class NfCoreResultRegistry implements Registry {
     private enum AnalysisType {
         RNA_SEQ,
         VARIANT_CALLING
+    }
+
+    private enum SampleType {
+        ANALYSIS_WORKFLOW_RESULT
+    }
+
+    private enum DataSetType {
+        NF_CORE_RESULT
     }
 
     private static final Map<String, AnalysisType> PIPELINE_TO_ANALYSIS
@@ -148,19 +155,25 @@ class NfCoreResultRegistry implements Registry {
         existingExperimentIds = existingExperimentIds.sort()
 
         // 4. Create new run result sample
-        transaction.createNewSample()
+        def newSampleId = existingAnalysisRunIds.last().nextId()
+        def newOpenBisSample = transaction.createNewSample(newSampleId.toString(), SampleType.ANALYSIS_WORKFLOW_RESULT.toString())
 
         // 5. Create new experiment
+        ExperimentId newExperimentId = existingExperimentIds.last().nextId()
+        def newExperiment = transaction.createNewExperiment(newExperimentId.toString(), analysisType.toString())
 
         // 6. Set parent samples as parents in the newly created run result sample
+        newOpenBisSample.setParentSampleIdentifiers(sampleIds)
 
         // 7. Set experiment for run result sample
+        newOpenBisSample.setExperiment(newExperiment)
 
         // 8. Create new openBIS dataset
+        def dataset = transaction.createNewDataSet(DataSetType.NF_CORE_RESULT.toString())
+        dataset.setSample(newOpenBisSample)
 
         // 9. Attach result data to dataset
-
-        // Finish transaction
+        transaction.moveFile(this.datasetRootPath.toString(), dataset)
     }
 
     private List<SampleId> validateSampleIds(List<String> sampleIdList) throws RuntimeException {
