@@ -14,7 +14,10 @@ import java.nio.file.Path
 @Log4j2
 class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
-    static List<DatasetParser<?>> listOfParsers = [new BioinformaticAnalysisParser(), new NanoporeParser()] as List<DatasetParser<?>>
+    static List<DatasetParser<?>> listOfParsers = [
+            new BioinformaticAnalysisParser(),
+            new NanoporeParser()
+    ] as List<DatasetParser<?>>
 
     @Override
     public void process(IDataSetRegistrationTransactionV2 transaction) {
