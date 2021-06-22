@@ -35,23 +35,25 @@ import java.nio.file.Paths
  */
 class NfCoreResultRegistry implements Registry {
 
-    private enum AnalysisType {
+    private static enum AnalysisType {
         RNA_SEQ,
         VARIANT_CALLING
     }
 
-    private enum SampleType {
+    private static enum SampleType {
         ANALYSIS_WORKFLOW_RESULT
     }
 
-    private enum DataSetType {
+    private static enum DataSetType {
         NF_CORE_RESULT
     }
 
     private static final Map<String, AnalysisType> PIPELINE_TO_ANALYSIS
     static {
-        PIPELINE_TO_ANALYSIS.put("nf-core/rnaseq", AnalysisType.RNA_SEQ)
-        PIPELINE_TO_ANALYSIS.put("nf-core/sarek", AnalysisType.VARIANT_CALLING)
+        Map<String, AnalysisType> tmpMap = new HashMap<>()
+        tmpMap.put("nf-core/rnaseq", AnalysisType.RNA_SEQ)
+        tmpMap.put("nf-core/sarek", AnalysisType.VARIANT_CALLING)
+        PIPELINE_TO_ANALYSIS = Collections.unmodifiableMap(tmpMap)
     }
 
     private final NfCorePipelineResult pipelineResult
@@ -81,8 +83,8 @@ class NfCoreResultRegistry implements Registry {
      * {@inheritDocs}
      */
     @Override
-    void executeRegistration(IDataSetRegistrationTransactionV2 transaction) throws RegistrationException {
-        datasetRootPath = transaction.incoming.toPath()
+    void executeRegistration(IDataSetRegistrationTransactionV2 transaction, Path datasetRootPath) throws RegistrationException {
+        this.datasetRootPath = datasetRootPath
         def sampleIds = getInputSamples().orElseThrow({
              throw new RegistrationException("Could not determine sample codes that have been " +
                      "used for the nf-core pipeline run.")})
@@ -153,12 +155,16 @@ class NfCoreResultRegistry implements Registry {
         existingExperimentIds = existingExperimentIds.sort()
 
         // 4. Create new run result sample
-        def newSampleId = existingAnalysisRunIds.last().nextId()
-        def newOpenBisSample = transaction.createNewSample(newSampleId.toString(), SampleType.ANALYSIS_WORKFLOW_RESULT.toString())
+        def newAnalysisRunId = existingAnalysisRunIds.last().nextId()
+        // New sample code /<space>/<project code>R<number>
+        def newRunSampleId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newAnalysisRunId.toString()}"
+        def newOpenBisSample = transaction.createNewSample(newRunSampleId, SampleType.ANALYSIS_WORKFLOW_RESULT.toString())
 
         // 5. Create new experiment
         ExperimentId newExperimentId = existingExperimentIds.last().nextId()
-        def newExperiment = transaction.createNewExperiment(newExperimentId.toString(), analysisType.toString())
+        // New sample code /<space>/<project code>E<number>
+        def newExperimentFullId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newExperimentId.toString()}"
+        def newExperiment = transaction.createNewExperiment(newExperimentFullId, analysisType.toString())
 
         // 6. Set parent samples as parents in the newly created run result sample
         newOpenBisSample.setParentSampleIdentifiers(sampleIds)
@@ -189,6 +195,7 @@ class NfCoreResultRegistry implements Registry {
      */
     private Optional<List<String>> getInputSamples() {
         def sampleIdPath = Paths.get(datasetRootPath.toString(), pipelineResult.sampleIds.relativePath)
+        println sampleIdPath
         def sampleIds = parseSampleIdsFrom(sampleIdPath)
         sampleIds ? Optional.of(sampleIds) : Optional.empty() as Optional<List<String>>
     }

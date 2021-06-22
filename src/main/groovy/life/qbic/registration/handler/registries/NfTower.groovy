@@ -39,8 +39,8 @@ class NfTower implements WorkflowMonitor {
      * @inheritDocs
      */
     Optional<String> getPipelineName(String workflowId) {
-        RxHttpClient httpClient = RxHttpClient.create(NXF_TOWER_API_URL as URL)
-        String query = UriBuilder.of("${NXF_TOWER_API_URL}/workflow/{workflowId}")
+        RxHttpClient httpClient = RxHttpClient.create(new URL(NXF_TOWER_API_URL))
+        String query = UriBuilder.of("${NXF_TOWER_API_URL}/workflow/{workflowId}?workspaceId=${NXF_WORKSPACE_ID}")
                 .expand(Collections.singletonMap("workflowId", workflowId))
                 .toString()
         HttpRequest request = HttpRequest.GET(query)

@@ -25,6 +25,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         String incomingName = transaction.getIncoming().getName()
 
         Path relevantData = new File(incomingPath, incomingName).toPath()
+        log.info("Processing incoming dataset '${relevantData.toString()}'...")
         
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(relevantData)
@@ -42,7 +43,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
                 }
         )
 
-        registry.executeRegistration(transaction)
+        registry.executeRegistration(transaction, relevantData)
     }
 }
 
