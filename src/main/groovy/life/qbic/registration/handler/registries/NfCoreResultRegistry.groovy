@@ -167,9 +167,10 @@ class NfCoreResultRegistry implements Registry {
             existingAnalysisRunIds.add(id)
         }
         existingAnalysisRunIds = existingAnalysisRunIds.sort()
-
+        log.info "schon hier"
         // 3. Get existing experiments
-        List<IExperimentImmutable> existingExperiments = searchService.listExperiments(sampleIdList[0].getProjectCode().toString()) as List<IExperimentImmutable>
+        List<IExperimentImmutable> existingExperiments =
+                searchService.listExperiments("/${context.getProjectSpace().toString()}/${sampleIdList[0].getProjectCode().toString()}") as List<IExperimentImmutable>
         log.info existingExperiments
         List<ExperimentId> existingExperimentIds = []
         for (IExperimentImmutable experiment in existingExperiments) {
@@ -184,7 +185,7 @@ class NfCoreResultRegistry implements Registry {
         def newRunSampleId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newAnalysisRunId.toString()}"
         log.info newRunSampleId
         def newOpenBisSample = transaction.createNewSample(newRunSampleId, SampleType.ANALYSIS_WORKFLOW_RESULT.toString())
-
+        log.info "here"
         // 5. Create new experiment
         ExperimentId newExperimentId = existingExperimentIds ? existingExperimentIds.last().nextId() : new ExperimentId(1)
         // New sample code /<space>/<project code>E<number>
