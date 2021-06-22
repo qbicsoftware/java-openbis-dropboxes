@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull
 @EqualsAndHashCode(includeFields = true)
 class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<AnalysisResultId> {
 
-    private final Integer resultId
+    final Integer resultId
 
     private static final String PREFIX = 'R'
 
@@ -74,7 +74,7 @@ class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<Analys
      * @since 1.0.0
      */
     AnalysisResultId nextId() {
-        new AnalysisResultId(this.id + 1)
+        new AnalysisResultId(this.resultId + 1)
     }
 
     /**
@@ -89,7 +89,7 @@ class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<Analys
      */
     @Override
     String toString() {
-        return "${PREFIX}${id}"
+        return "${PREFIX}${resultId}"
     }
 
     @Override
@@ -99,9 +99,8 @@ class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<Analys
     }
 
     private int compareAnalysisId(AnalysisResultId otherId) {
-        int difference = this.id - otherId.id
+        int difference = this.resultId - otherId.getResultId()
         int result = 0
-        println difference
         switch (difference) {
             case { it > 0 }:
                 result = 1

@@ -4,6 +4,7 @@ import ch.systemsx.cisd.etlserver.registrator.api.v2.AbstractJavaDataSetRegistra
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import groovy.util.logging.Log4j2
 import life.qbic.datasets.parsers.DatasetParser
+import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.RegistrationHandler
 import life.qbic.registration.handler.Registry
 import life.qbic.utils.BioinformaticAnalysisParser
@@ -43,7 +44,12 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
                 }
         )
 
-        registry.executeRegistration(transaction, relevantData)
+        try {
+            registry.executeRegistration(transaction, relevantData)
+        } catch (RegistrationException e) {
+            log.error(e.getMessage())
+            throw new Exception("Could not register data! Manual intervention is needed.")
+        }
     }
 }
 

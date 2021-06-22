@@ -2,7 +2,6 @@ package life.qbic.registration.handler.registries
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
-import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v1.IExperimentImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
@@ -10,7 +9,6 @@ import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
-import life.qbic.datamodel.dtos.projectmanagement.ProjectIdentifier
 import life.qbic.datamodel.dtos.projectmanagement.ProjectSpace
 import life.qbic.registration.AnalysisResultId
 import life.qbic.registration.Context
@@ -18,6 +16,9 @@ import life.qbic.registration.ExperimentId
 import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
+import life.qbic.registration.types.QDatasetType
+import life.qbic.registration.types.QExperimentType
+import life.qbic.registration.types.QSampleType
 
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -38,11 +39,6 @@ import java.nio.file.Paths
 @Log4j2
 class NfCoreResultRegistry implements Registry {
 
-    private static enum AnalysisType {
-        RNA_SEQ,
-        VARIANT_CALLING
-    }
-
     private static enum SampleType {
         ANALYSIS_WORKFLOW_RESULT
     }
@@ -51,12 +47,28 @@ class NfCoreResultRegistry implements Registry {
         NF_CORE_RESULT
     }
 
-    private static final Map<String, AnalysisType> PIPELINE_TO_ANALYSIS
+    private static final Map<String, QExperimentType> PIPELINE_TO_EXPERIMENT_TYPE
     static {
-        Map<String, AnalysisType> tmpMap = new HashMap<>()
-        tmpMap.put("nf-core/rnaseq", AnalysisType.RNA_SEQ)
-        tmpMap.put("nf-core/sarek", AnalysisType.VARIANT_CALLING)
-        PIPELINE_TO_ANALYSIS = Collections.unmodifiableMap(tmpMap)
+        Map<String, QExperimentType> tmpMap = new HashMap<>()
+        tmpMap.put("nf-core/rnaseq", QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS)
+        tmpMap.put("nf-core/sarek", QExperimentType.Q_WF_NGS_VARIANT_CALLING)
+        PIPELINE_TO_EXPERIMENT_TYPE = Collections.unmodifiableMap(tmpMap)
+    }
+
+    private static final Map<QExperimentType, QSampleType> EXPERIMENT_TO_SAMPLE_TYPE
+    static {
+        Map<QExperimentType, QSampleType> tmpMap = new HashMap<>()
+        tmpMap.put(QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS, QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
+        tmpMap.put(QExperimentType.Q_WF_NGS_VARIANT_CALLING, QSampleType.Q_WF_NGS_VARIANT_CALLING_RUN)
+        EXPERIMENT_TO_SAMPLE_TYPE = Collections.unmodifiableMap(tmpMap)
+    }
+
+    private static final Map<String, QDatasetType> WF_NAME_TO_DATASET_TYPE
+    static {
+        Map<String, QDatasetType> tmpMap = new HashMap<>()
+        tmpMap.put("nf-core/rnaseq", QDatasetType.Q_WF_NGS_RNAEXPRESSIONANALYSIS_RESULTS)
+        tmpMap.put("nf-core/sarek", QDatasetType.Q_WF_NGS_VARIANT_CALLING_RESULTS)
+        WF_NAME_TO_DATASET_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
     private final NfCorePipelineResult pipelineResult
@@ -66,6 +78,8 @@ class NfCoreResultRegistry implements Registry {
     private Context context
 
     private final NfTower nfTower
+
+    private String usedNfCorePipeline
 
     /**
      * <p>Creates an instance of a nf-core pipeline result registry, that
@@ -100,12 +114,17 @@ class NfCoreResultRegistry implements Registry {
             throw new RegistrationException("Could not determine analysis type for run ${runId}.")
         })
 
+        this.usedNfCorePipeline = nfTower.getPipelineName(runId).orElseThrow({
+            throw new RegistrationException("Could not determine pipeline name for run ${runId}.")
+        })
+
         log.info "Los gehts 2"
 
         try {
             register(transaction, sampleIds, analysisType)
         } catch (RuntimeException e) {
-            new RegistrationException(e.message)
+            log.error("An exception occurred during the registration.")
+            throw new RegistrationException(e.getMessage())
         }
     }
 
@@ -131,7 +150,7 @@ class NfCoreResultRegistry implements Registry {
      */
     private void register(IDataSetRegistrationTransactionV2 transaction,
                           List<String> sampleIds,
-                          AnalysisType analysisType) {
+                          QExperimentType analysisType) {
         // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
@@ -146,10 +165,6 @@ class NfCoreResultRegistry implements Registry {
             ISample sample = transaction.getSampleForUpdate("/${context.getProjectSpace()}/$sampleId")
             parentSamples.add(sample)
         }
-        log.info sampleIdList
-        log.info parentSamples
-        log.info "3"
-        log.info context
 
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
@@ -160,36 +175,44 @@ class NfCoreResultRegistry implements Registry {
         )
 
         List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteriaResultSamples)
-        log.info existingAnalysisResultSamples
+
         List<AnalysisResultId> existingAnalysisRunIds = []
-        for (ISampleImmutable sample in existingAnalysisResultSamples) {
+        for (sample in existingAnalysisResultSamples) {
             AnalysisResultId id = AnalysisResultId.parseFrom(sample.code)
             existingAnalysisRunIds.add(id)
         }
-        existingAnalysisRunIds = existingAnalysisRunIds.sort()
-        log.info "schon hier"
+        existingAnalysisRunIds.sort(Comparator.naturalOrder())
+
         // 3. Get existing experiments
         List<IExperimentImmutable> existingExperiments =
                 searchService.listExperiments("/${context.getProjectSpace().toString()}/${sampleIdList[0].getProjectCode().toString()}") as List<IExperimentImmutable>
-        log.info existingExperiments
         List<ExperimentId> existingExperimentIds = []
-        for (IExperimentImmutable experiment in existingExperiments) {
-            ExperimentId id = ExperimentId.parseFrom(experiment.experimentIdentifier)
-            existingExperimentIds.add(id)
+        for (experiment in existingExperiments) {
+            try {
+                ExperimentId id = ExperimentId.parseFrom(experiment.experimentIdentifier)
+                existingExperimentIds.add(id)
+            } catch (NumberFormatException e) {
+                log.error "Cannot process experiment with id ${experiment.getExperimentIdentifier()}"
+            }
         }
-        existingExperimentIds = existingExperimentIds.sort()
+        existingExperimentIds.sort(Comparator.naturalOrder())
 
         // 4. Create new run result sample
+        def sampleType = determineSampleTypeFrom(analysisType).orElseThrow({
+            throw new RegistrationException("Cannot infere sample type for experiment $analysisType")
+        })
         def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
-        def newRunSampleId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newAnalysisRunId.toString()}"
-        log.info newRunSampleId
-        def newOpenBisSample = transaction.createNewSample(newRunSampleId, SampleType.ANALYSIS_WORKFLOW_RESULT.toString())
-        log.info "here"
+        def newRunSampleId = "/${context.getProjectSpace().toString()}/${context.getProjectCode().toString()}${newAnalysisRunId.toString()}"
+
+        def newOpenBisSample = transaction.createNewSample(newRunSampleId, sampleType.toString())
+
         // 5. Create new experiment
         ExperimentId newExperimentId = existingExperimentIds ? existingExperimentIds.last().nextId() : new ExperimentId(1)
-        // New sample code /<space>/<project code>E<number>
-        def newExperimentFullId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newExperimentId.toString()}"
+        // New sample code /<space>/<project code>/<project code>E<number>
+        def newExperimentFullId = "/${context.getProjectSpace().toString()}/" +
+                "${context.getProjectCode().toString()}/" +
+                "${context.getProjectCode().toString()}${newExperimentId.toString()}"
         log.info newExperimentFullId
         def newExperiment = transaction.createNewExperiment(newExperimentFullId, analysisType.toString())
 
@@ -200,7 +223,7 @@ class NfCoreResultRegistry implements Registry {
         newOpenBisSample.setExperiment(newExperiment)
 
         // 8. Create new openBIS dataset
-        def dataset = transaction.createNewDataSet(DataSetType.NF_CORE_RESULT.toString())
+        def dataset = transaction.createNewDataSet(WF_NAME_TO_DATASET_TYPE.get(this.usedNfCorePipeline) as String)
         dataset.setSample(newOpenBisSample)
 
         // 9. Attach result data to dataset
@@ -284,7 +307,7 @@ class NfCoreResultRegistry implements Registry {
     /*
     Returns the analysis type.
      */
-    private Optional<AnalysisType> getAnalysisType(String runId) {
+    private Optional<QExperimentType> getAnalysisType(String runId) {
         String pipelineName = nfTower.getPipelineName(runId).orElseThrow({
             throw new RegistrationException("Could not determine pipeline name from Nextflow Tower for run id $runId")})
         return determineAnalysisTypeFrom(pipelineName)
@@ -293,9 +316,17 @@ class NfCoreResultRegistry implements Registry {
     /*
     Returns the associated analysis type based on the pipeline name.
      */
-    private Optional<AnalysisType> determineAnalysisTypeFrom(String pipelineName) {
-        AnalysisType type = PIPELINE_TO_ANALYSIS.get(pipelineName)
-        return type ? Optional.of(type) : Optional.empty() as Optional<AnalysisType>
+    private Optional<QExperimentType> determineAnalysisTypeFrom(String pipelineName) {
+        QExperimentType type = PIPELINE_TO_EXPERIMENT_TYPE.get(pipelineName)
+        return type ? Optional.of(type) : Optional.empty() as Optional<QExperimentType>
+    }
+
+    /*
+    Returns the associated analysis type based on the pipeline name.
+     */
+    private Optional<QSampleType> determineSampleTypeFrom(QExperimentType experimentType) {
+        def type = EXPERIMENT_TO_SAMPLE_TYPE.get(experimentType)
+        return type ? Optional.of(type) : Optional.empty() as Optional<QSampleType>
     }
 
 }
