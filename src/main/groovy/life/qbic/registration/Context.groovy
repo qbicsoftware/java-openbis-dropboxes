@@ -1,7 +1,6 @@
 package life.qbic.registration
 
 import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
-import life.qbic.datamodel.dtos.projectmanagement.ProjectIdentifier
 import life.qbic.datamodel.dtos.projectmanagement.ProjectSpace
 
 /**
@@ -14,7 +13,4 @@ class Context {
     ProjectCode projectCode
 
     ProjectSpace projectSpace
-
-    ProjectIdentifier projectIdentifier
-
 }

@@ -2,10 +2,12 @@ package life.qbic.registration.handler.registries
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
+import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v1.IExperimentImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
+import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
 import life.qbic.datamodel.dtos.projectmanagement.ProjectIdentifier
@@ -33,6 +35,7 @@ import java.nio.file.Paths
  *
  * @since 1.0.0
  */
+@Log4j2
 class NfCoreResultRegistry implements Registry {
 
     private static enum AnalysisType {
@@ -85,6 +88,7 @@ class NfCoreResultRegistry implements Registry {
     @Override
     void executeRegistration(IDataSetRegistrationTransactionV2 transaction, Path datasetRootPath) throws RegistrationException {
         this.datasetRootPath = datasetRootPath
+        log.info "Los gehts"
         def sampleIds = getInputSamples().orElseThrow({
              throw new RegistrationException("Could not determine sample codes that have been " +
                      "used for the nf-core pipeline run.")})
@@ -96,6 +100,8 @@ class NfCoreResultRegistry implements Registry {
             throw new RegistrationException("Could not determine analysis type for run ${runId}.")
         })
 
+        log.info "Los gehts 2"
+
         try {
             register(transaction, sampleIds, analysisType)
         } catch (RuntimeException e) {
@@ -103,12 +109,21 @@ class NfCoreResultRegistry implements Registry {
         }
     }
 
-    private static Context createContextFromSample(ISample sample) {
+    private static Optional<Context> getContext(SampleId sampleId,
+                                                ISearchService searchService) {
+        SearchCriteria sc = new SearchCriteria()
+        sc.addMatchClause(
+                SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE, sampleId.toString())
+        )
+        List<ISampleImmutable> searchResult = searchService.searchForSamples(sc)
+        if (!searchResult) {
+            return Optional.empty()
+        }
+        ProjectSpace space = new ProjectSpace(searchResult[0].getSpace())
+        ProjectCode code = sampleId.getProjectCode()
 
-        ProjectCode projectCode = new ProjectCode(sample.project.code)
-        ProjectSpace projectSpace = new ProjectSpace(sample.space)
-        return new Context(projectCode: projectCode, projectSpace: projectSpace,
-                projectIdentifier: new ProjectIdentifier(projectSpace, projectCode))
+        Context context = new Context(projectSpace: space, projectCode: code)
+        return Optional.of(context)
     }
 
     /*
@@ -122,22 +137,30 @@ class NfCoreResultRegistry implements Registry {
         // the pipeline run
         List<SampleId> sampleIdList = validateSampleIds(sampleIds)
 
+        this.context = getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
+            new RegistrationException("Could not determine context for samples ${sampleIdList}")
+        })
+
         List<ISample> parentSamples = []
         for (SampleId sampleId : sampleIdList) {
-            ISample sample = transaction.getSampleForUpdate(sampleId.toString())
+            ISample sample = transaction.getSampleForUpdate("/${context.getProjectSpace()}/$sampleId")
             parentSamples.add(sample)
         }
-        this.context = createContextFromSample(parentSamples[0])
+        log.info sampleIdList
+        log.info parentSamples
+        log.info "3"
+        log.info context
 
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
         SearchCriteria searchCriteriaResultSamples = new SearchCriteria()
 
         searchCriteriaResultSamples.addMatchClause(
-                SearchCriteria.MatchClause.createAnyFieldMatch("${sampleIdList[0].projectCode}R")
+                SearchCriteria.MatchClause.createAnyFieldMatch("${sampleIdList[0].getProjectCode().toString()}R")
         )
 
         List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteriaResultSamples)
+        log.info existingAnalysisResultSamples
         List<AnalysisResultId> existingAnalysisRunIds = []
         for (ISampleImmutable sample in existingAnalysisResultSamples) {
             AnalysisResultId id = AnalysisResultId.parseFrom(sample.code)
@@ -146,7 +169,8 @@ class NfCoreResultRegistry implements Registry {
         existingAnalysisRunIds = existingAnalysisRunIds.sort()
 
         // 3. Get existing experiments
-        List<IExperimentImmutable> existingExperiments = searchService.listExperiments(sampleIdList[0].projectCode) as List<IExperimentImmutable>
+        List<IExperimentImmutable> existingExperiments = searchService.listExperiments(sampleIdList[0].getProjectCode().toString()) as List<IExperimentImmutable>
+        log.info existingExperiments
         List<ExperimentId> existingExperimentIds = []
         for (IExperimentImmutable experiment in existingExperiments) {
             ExperimentId id = ExperimentId.parseFrom(experiment.experimentIdentifier)
@@ -155,15 +179,17 @@ class NfCoreResultRegistry implements Registry {
         existingExperimentIds = existingExperimentIds.sort()
 
         // 4. Create new run result sample
-        def newAnalysisRunId = existingAnalysisRunIds.last().nextId()
+        def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
         def newRunSampleId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newAnalysisRunId.toString()}"
+        log.info newRunSampleId
         def newOpenBisSample = transaction.createNewSample(newRunSampleId, SampleType.ANALYSIS_WORKFLOW_RESULT.toString())
 
         // 5. Create new experiment
-        ExperimentId newExperimentId = existingExperimentIds.last().nextId()
+        ExperimentId newExperimentId = existingExperimentIds ? existingExperimentIds.last().nextId() : new ExperimentId(1)
         // New sample code /<space>/<project code>E<number>
         def newExperimentFullId = "/${context.projectSpace.toString()}/${context.projectCode.toString()}${newExperimentId.toString()}"
+        log.info newExperimentFullId
         def newExperiment = transaction.createNewExperiment(newExperimentFullId, analysisType.toString())
 
         // 6. Set parent samples as parents in the newly created run result sample

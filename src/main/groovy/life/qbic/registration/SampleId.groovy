@@ -1,6 +1,7 @@
 package life.qbic.registration
 
 import groovy.transform.EqualsAndHashCode
+import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -21,7 +22,7 @@ class SampleId {
     /**
      * <p>Holds the project id, which is always part of the sample id.</p>
      */
-    final String projectCode
+    final ProjectCode projectCode
 
     /**
      * <p>Holds the running sample number.</p>
@@ -60,7 +61,7 @@ class SampleId {
     }
 
     private SampleId(String sampleId) {
-        this.projectCode = sampleId[0..4]
+        this.projectCode = new ProjectCode(sampleId[0..4])
         this.runningNumber = Integer.parseInt(sampleId[5..7])
         this.checksum = sampleId[8..-1]
     }
