@@ -170,7 +170,7 @@ class NfCoreResultRegistry implements Registry {
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
         SearchCriteria searchCriteriaResultSamples = new SearchCriteria()
-        println "${sampleIdList[0].getProjectCode().toString()}R"
+        log.info "${sampleIdList[0].getProjectCode().toString()}R"
         searchCriteriaResultSamples.addMatchClause(
                 SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE,
                         "${sampleIdList[0].getProjectCode().toString()}R*")
