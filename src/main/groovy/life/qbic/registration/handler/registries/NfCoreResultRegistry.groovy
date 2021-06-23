@@ -102,7 +102,7 @@ class NfCoreResultRegistry implements Registry {
     @Override
     void executeRegistration(IDataSetRegistrationTransactionV2 transaction, Path datasetRootPath) throws RegistrationException {
         this.datasetRootPath = datasetRootPath
-        log.info "Los gehts"
+
         def sampleIds = getInputSamples().orElseThrow({
              throw new RegistrationException("Could not determine sample codes that have been " +
                      "used for the nf-core pipeline run.")})
@@ -117,8 +117,6 @@ class NfCoreResultRegistry implements Registry {
         this.usedNfCorePipeline = nfTower.getPipelineName(runId).orElseThrow({
             throw new RegistrationException("Could not determine pipeline name for run ${runId}.")
         })
-
-        log.info "Los gehts 2"
 
         try {
             register(transaction, sampleIds, analysisType)
@@ -169,9 +167,10 @@ class NfCoreResultRegistry implements Registry {
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
         SearchCriteria searchCriteriaResultSamples = new SearchCriteria()
-
+        println "${sampleIdList[0].getProjectCode().toString()}R"
         searchCriteriaResultSamples.addMatchClause(
-                SearchCriteria.MatchClause.createAnyFieldMatch("${sampleIdList[0].getProjectCode().toString()}R")
+                SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE,
+                        "${sampleIdList[0].getProjectCode().toString()}R*")
         )
 
         List<ISampleImmutable> existingAnalysisResultSamples = searchService.searchForSamples(searchCriteriaResultSamples)
@@ -182,6 +181,7 @@ class NfCoreResultRegistry implements Registry {
             existingAnalysisRunIds.add(id)
         }
         existingAnalysisRunIds.sort(Comparator.naturalOrder())
+        log.info existingAnalysisRunIds
 
         // 3. Get existing experiments
         List<IExperimentImmutable> existingExperiments =
@@ -204,7 +204,7 @@ class NfCoreResultRegistry implements Registry {
         def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
         def newRunSampleId = "/${context.getProjectSpace().toString()}/${context.getProjectCode().toString()}${newAnalysisRunId.toString()}"
-
+        log.info newRunSampleId
         def newOpenBisSample = transaction.createNewSample(newRunSampleId, sampleType.toString())
 
         // 5. Create new experiment
@@ -213,7 +213,7 @@ class NfCoreResultRegistry implements Registry {
         def newExperimentFullId = "/${context.getProjectSpace().toString()}/" +
                 "${context.getProjectCode().toString()}/" +
                 "${context.getProjectCode().toString()}${newExperimentId.toString()}"
-        log.info newExperimentFullId
+
         def newExperiment = transaction.createNewExperiment(newExperimentFullId, analysisType.toString())
 
         // 6. Set parent samples as parents in the newly created run result sample
@@ -245,7 +245,6 @@ class NfCoreResultRegistry implements Registry {
      */
     private Optional<List<String>> getInputSamples() {
         def sampleIdPath = Paths.get(datasetRootPath.toString(), pipelineResult.sampleIds.relativePath)
-        println sampleIdPath
         def sampleIds = parseSampleIdsFrom(sampleIdPath)
         sampleIds ? Optional.of(sampleIds) : Optional.empty() as Optional<List<String>>
     }
@@ -264,11 +263,11 @@ class NfCoreResultRegistry implements Registry {
         } catch (Exception e) {
             switch (e) {
                 case FileNotFoundException:
-                    println "File ${file} was not found."
+                    log.error "File ${file} was not found."
                     break
                 default:
-                    println "Could not read from file ${file}."
-                    println "Reason: ${e.stackTrace.join("\n")}"
+                    log.error "Could not read from file ${file}."
+                    log.error "Reason: ${e.stackTrace.join("\n")}"
             }
         }
         return sampleIds
@@ -294,11 +293,11 @@ class NfCoreResultRegistry implements Registry {
         } catch (Exception e) {
             switch (e) {
                 case FileNotFoundException:
-                    println "File ${file} was not found."
+                    log.error "File ${file} was not found."
                     break
                 default:
-                    println "Could not read from file ${file}."
-                    println "Reason: ${e.stackTrace.join("\n")}"
+                    log.error "Could not read from file ${file}."
+                    log.error "Reason: ${e.stackTrace.join("\n")}"
             }
         }
         return runId
