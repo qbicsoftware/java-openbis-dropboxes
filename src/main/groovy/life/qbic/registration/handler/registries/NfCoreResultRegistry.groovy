@@ -163,6 +163,9 @@ class NfCoreResultRegistry implements Registry {
             ISample sample = transaction.getSampleForUpdate("/${context.getProjectSpace()}/$sampleId")
             parentSamples.add(sample)
         }
+        // Both lists must have the same length,
+        // otherwise that means that not all samples where found in openBIS
+        assert sampleIdList.size() == parentSamples.size()
 
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
@@ -181,7 +184,6 @@ class NfCoreResultRegistry implements Registry {
             existingAnalysisRunIds.add(id)
         }
         existingAnalysisRunIds.sort(Comparator.naturalOrder())
-        log.info existingAnalysisRunIds
 
         // 3. Get existing experiments
         List<IExperimentImmutable> existingExperiments =
@@ -204,7 +206,6 @@ class NfCoreResultRegistry implements Registry {
         def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
         def newRunSampleId = "/${context.getProjectSpace().toString()}/${context.getProjectCode().toString()}${newAnalysisRunId.toString()}"
-        log.info newRunSampleId
         def newOpenBisSample = transaction.createNewSample(newRunSampleId, sampleType.toString())
 
         // 5. Create new experiment
