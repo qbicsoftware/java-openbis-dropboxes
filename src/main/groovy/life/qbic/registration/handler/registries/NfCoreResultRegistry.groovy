@@ -18,6 +18,7 @@ import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
 import life.qbic.registration.types.QDatasetType
 import life.qbic.registration.types.QExperimentType
+import life.qbic.registration.types.QPropertyTypes
 import life.qbic.registration.types.QSampleType
 
 import java.nio.file.Path
@@ -81,6 +82,8 @@ class NfCoreResultRegistry implements Registry {
 
     private String usedNfCorePipeline
 
+    private String workflowRunId
+
     /**
      * <p>Creates an instance of a nf-core pipeline result registry, that
      * is able to register pipeline output from nf-core bioinformatic pipelines in openBIS.</p>
@@ -107,14 +110,14 @@ class NfCoreResultRegistry implements Registry {
              throw new RegistrationException("Could not determine sample codes that have been " +
                      "used for the nf-core pipeline run.")})
 
-        def runId = getTowerRunId().orElseThrow({
+        this.workflowRunId = getTowerRunId().orElseThrow({
             throw new RegistrationException("Could not determine workflow run id from Tower.")})
 
-        def analysisType = getAnalysisType(runId).orElseThrow({
+        def analysisType = getAnalysisType(workflowRunId).orElseThrow({
             throw new RegistrationException("Could not determine analysis type for run ${runId}.")
         })
 
-        this.usedNfCorePipeline = nfTower.getPipelineName(runId).orElseThrow({
+        this.usedNfCorePipeline = nfTower.getPipelineName(workflowRunId).orElseThrow({
             throw new RegistrationException("Could not determine pipeline name for run ${runId}.")
         })
 
@@ -170,7 +173,6 @@ class NfCoreResultRegistry implements Registry {
         // 2. Get existing analysis run results
         ISearchService searchService = transaction.getSearchService()
         SearchCriteria searchCriteriaResultSamples = new SearchCriteria()
-        log.info "${sampleIdList[0].getProjectCode().toString()}R"
         searchCriteriaResultSamples.addMatchClause(
                 SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE,
                         "${sampleIdList[0].getProjectCode().toString()}R*")
@@ -216,6 +218,9 @@ class NfCoreResultRegistry implements Registry {
                 "${context.getProjectCode().toString()}${newExperimentId.toString()}"
 
         def newExperiment = transaction.createNewExperiment(newExperimentFullId, analysisType.toString())
+        // Set Tower run id and the used pipeline
+        newExperiment.setPropertyValue(QPropertyTypes.Q_WF_ID.toString(), workflowRunId)
+        newExperiment.setPropertyValue(QPropertyTypes.Q_WF_NAME.toString(), usedNfCorePipeline)
 
         // 6. Set parent samples as parents in the newly created run result sample
         newOpenBisSample.setParentSampleIdentifiers(sampleIds)
