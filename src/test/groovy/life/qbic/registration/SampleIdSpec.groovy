@@ -20,7 +20,7 @@ class SampleIdSpec extends Specification {
         sampleId.isPresent()
         SampleId id = sampleId.get()
         id.runningNumber == 1
-        id.projectCode == "QTEST"
+        id.projectCode.toString() == "QTEST"
     }
 
     def "Creating a sample id object from a text containing two valid ids must return the first valid sampleId"() {
@@ -33,7 +33,7 @@ class SampleIdSpec extends Specification {
         then: "The id must be the first valid occurrence of a sample id in the text"
         SampleId id = sampleId.get()
         id.runningNumber == 10
-        id.projectCode == "QREST"
+        id.projectCode.toString() == "QREST"
     }
 
     def "Creating a sample id object from a text containing no valid ids must return an empty object"() {

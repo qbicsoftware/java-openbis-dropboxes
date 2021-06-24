@@ -2,6 +2,8 @@ package life.qbic.registration.handler
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 
+import java.nio.file.Path
+
 /**
  * A registry that takes a dataset and registers it in openBIS.
  *
@@ -19,9 +21,11 @@ interface Registry {
      * exception occurs during the registration procedure.
      *
      * @param transaction an instance of an openBIS transaction event.
+     * @param datasetRootPath the data set root path, must be an absolute path
      * @throws RegistrationException if the registration failed for any reason.
      * @since 1.0.0
      */
-    void executeRegistration(IDataSetRegistrationTransactionV2 transaction) throws RegistrationException
+    void executeRegistration(IDataSetRegistrationTransactionV2 transaction,
+                             Path datasetRootPath) throws RegistrationException
 
 }
