@@ -56,12 +56,12 @@ class NfCoreResultRegistry implements Registry {
         PIPELINE_TO_EXPERIMENT_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
-    private static final Map<QExperimentType, QSampleType> EXPERIMENT_TO_SAMPLE_TYPE
+    private static final Map<String, QSampleType> PIPELINE_TO_SAMPLE_TYPE
     static {
-        Map<QExperimentType, QSampleType> tmpMap = new HashMap<>()
-        tmpMap.put(QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS, QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
-        tmpMap.put(QExperimentType.Q_WF_NGS_VARIANT_CALLING, QSampleType.Q_WF_NGS_VARIANT_CALLING_RUN)
-        EXPERIMENT_TO_SAMPLE_TYPE = Collections.unmodifiableMap(tmpMap)
+        Map<String, QSampleType> tmpMap = new HashMap<>()
+        tmpMap.put("nf-core/rnaseq", QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
+        tmpMap.put("nf-core/sarek", QSampleType.Q_WF_NGS_VARIANT_CALLING_RUN)
+        PIPELINE_TO_SAMPLE_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
     private static final Map<String, QDatasetType> WF_NAME_TO_DATASET_TYPE
@@ -202,8 +202,8 @@ class NfCoreResultRegistry implements Registry {
         existingExperimentIds.sort(Comparator.naturalOrder())
 
         // 4. Create new run result sample
-        def sampleType = determineSampleTypeFrom(analysisType).orElseThrow({
-            throw new RegistrationException("Cannot infere sample type for experiment $analysisType")
+        def sampleType = determineSampleTypeFrom(usedNfCorePipeline).orElseThrow({
+            throw new RegistrationException("Cannot infere sample type for pipeline $usedNfCorePipeline")
         })
         def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
@@ -327,10 +327,10 @@ class NfCoreResultRegistry implements Registry {
     }
 
     /*
-    Returns the associated analysis type based on the pipeline name.
+    Returns the associated sample type based on the pipeline name.
      */
-    private Optional<QSampleType> determineSampleTypeFrom(QExperimentType experimentType) {
-        def type = EXPERIMENT_TO_SAMPLE_TYPE.get(experimentType)
+    private Optional<QSampleType> determineSampleTypeFrom(String pipelineName) {
+        def type = PIPELINE_TO_SAMPLE_TYPE.get(pipelineName)
         return type ? Optional.of(type) : Optional.empty() as Optional<QSampleType>
     }
 
