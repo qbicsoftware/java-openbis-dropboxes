@@ -1,7 +1,7 @@
 package life.qbic.registration
 
 /**
- * <p>Experiment identifier object.</p>
+ * <p>QExperimentType identifier object.</p>
  *
  * <p>Full experiment run identifiers have the common form like:</p>
  *
@@ -19,9 +19,9 @@ package life.qbic.registration
  *
  * @since 1.0.0
  */
-class ExperimentId implements Increment<ExperimentId>{
+class ExperimentId implements Increment<ExperimentId>, Comparable<ExperimentId>{
 
-    private final Integer experimentId
+    final Integer experimentId
 
     private static final String PREFIX = 'E'
 
@@ -60,7 +60,7 @@ class ExperimentId implements Increment<ExperimentId>{
      */
     @Override
     ExperimentId nextId() {
-        return null
+        return new ExperimentId(this.experimentId+1)
     }
 
     /**
@@ -84,6 +84,26 @@ class ExperimentId implements Increment<ExperimentId>{
      */
     @Override
     String toString() {
-        return "${PREFIX}${id}"
+        return "${PREFIX}${experimentId}"
+    }
+
+    @Override
+    int compareTo(ExperimentId o) {
+        Objects.requireNonNull(o)
+        return compareExperimentId(o)
+    }
+
+    private int compareExperimentId(ExperimentId o) {
+        int difference = this.experimentId - o.getExperimentId()
+        int result = 0
+        switch (difference) {
+            case { it > 0 }:
+                result = 1
+                break
+            case { it < 0 }:
+                result = -1
+                break
+        }
+        return result
     }
 }

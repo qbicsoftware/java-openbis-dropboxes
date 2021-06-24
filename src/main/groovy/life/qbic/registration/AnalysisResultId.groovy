@@ -2,6 +2,8 @@ package life.qbic.registration
 
 import groovy.transform.EqualsAndHashCode
 
+import javax.validation.constraints.NotNull
+
 /**
  * <p>Analysis run identifier.</p>
  *
@@ -22,9 +24,9 @@ import groovy.transform.EqualsAndHashCode
  * @since 1.0.0
  */
 @EqualsAndHashCode(includeFields = true)
-class AnalysisResultId implements Increment<AnalysisResultId> {
+class AnalysisResultId implements Increment<AnalysisResultId>, Comparable<AnalysisResultId> {
 
-    private final Integer resultId
+    final Integer resultId
 
     private static final String PREFIX = 'R'
 
@@ -72,7 +74,7 @@ class AnalysisResultId implements Increment<AnalysisResultId> {
      * @since 1.0.0
      */
     AnalysisResultId nextId() {
-        new AnalysisResultId(this.id + 1)
+        new AnalysisResultId(this.resultId + 1)
     }
 
     /**
@@ -87,6 +89,26 @@ class AnalysisResultId implements Increment<AnalysisResultId> {
      */
     @Override
     String toString() {
-        return "${PREFIX}${id}"
+        return "${PREFIX}${resultId}"
+    }
+
+    @Override
+    int compareTo(@NotNull AnalysisResultId o) {
+        Objects.requireNonNull(o)
+        return compareAnalysisId(o)
+    }
+
+    private int compareAnalysisId(AnalysisResultId otherId) {
+        int difference = this.resultId - otherId.getResultId()
+        int result = 0
+        switch (difference) {
+            case { it > 0 }:
+                result = 1
+                break
+            case { it < 0 }:
+                result = -1
+                break
+        }
+        return result
     }
 }

@@ -31,4 +31,53 @@ class AnalysisResultIdSpec extends Specification {
         then:
         thrown(NumberFormatException)
     }
+
+    def "Comparing an higher analysis result id, with a lower, shall return 1"() {
+        given: "An id with a higher id value, and one with a lower"
+        def higherId = AnalysisResultId.parseFrom("QTESTR10")
+        def lowerId = AnalysisResultId.parseFrom("QTESTR2")
+
+        when: "we compare the higher id with the lower id"
+        int result = higherId <=> lowerId
+
+        then: "the returned value must be 1"
+        result == 1
+
+    }
+
+    def "Comparing an lower analysis result id, with a higher, shall return -1"() {
+        given: "An id with a higher id value, and one with a lower"
+        def higherId = AnalysisResultId.parseFrom("QTESTR10")
+        def lowerId = AnalysisResultId.parseFrom("QTESTR2")
+
+        when: "we compare the lower id with the higher id"
+        int result = lowerId <=> higherId
+
+        then: "the returned value must be 1"
+        result == -1
+
+    }
+
+    def "Comparing two equal ids shall return 0"() {
+        given: "Two ids with the same value"
+        def higherId = AnalysisResultId.parseFrom("QTESTR10")
+        def lowerId = AnalysisResultId.parseFrom("QTESTR10")
+
+        when: "we compare them"
+        int result = higherId <=> lowerId
+
+        then: "the returned value must be 0"
+        result == 0
+    }
+
+    def "Comparing with null throws null pointer exception"() {
+        given: "An id"
+        def id = AnalysisResultId.parseFrom("QTESTR10")
+
+        when: "we compare it with null"
+        id.compareTo(null)
+
+        then: "a NPE must be thrown"
+        thrown(NullPointerException)
+    }
 }
