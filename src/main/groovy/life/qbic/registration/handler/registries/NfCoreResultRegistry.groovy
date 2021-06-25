@@ -51,24 +51,66 @@ class NfCoreResultRegistry implements Registry {
     private static final Map<String, QExperimentType> PIPELINE_TO_EXPERIMENT_TYPE
     static {
         Map<String, QExperimentType> tmpMap = new HashMap<>()
-        tmpMap.put("nf-core/rnaseq", QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS)
+        tmpMap.put("nf-core/atacseq", QExperimentType.Q_WF_NGS_ATAC_SEQ)
+        tmpMap.put("nf-core/ampliseq", QExperimentType.Q_WF_NGS_16S_AMPLICON_SEQ)
+        tmpMap.put("nf-core/bcellmacgic", QExperimentType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ)
+        tmpMap.put("nf-core/chipseq", QExperimentType.Q_WF_NGS_CHIP_SEQ)
+        tmpMap.put("nf-core/eager", QExperimentType.Q_WF_NGS_ANCIENT_DNA_SEQ)
+        tmpMap.put("nf-core/hlatyping", QExperimentType.Q_WF_NGS_HLATYPING)
+        tmpMap.put("nf-core/mag", QExperimentType.Q_WF_NGS_SHOTGUN_METAGENOMICS_ANALYIS)
+        tmpMap.put("nf-core/methylseq", QExperimentType.Q_WF_NGS_METHYLATION_ANALYSIS)
+        tmpMap.put("nf-core/methaboigniter", QExperimentType.Q_WF_MX_IDENTIFY_AND_QUANTIFY)
+        tmpMap.put("nf-core/mhcquant", QExperimentType.Q_WF_LX_MHC_QUANTIFICATION)
+        tmpMap.put("nf-core/rnaseq", QExperimentType.Q_WF_NGS_RNA_SEQ)
         tmpMap.put("nf-core/sarek", QExperimentType.Q_WF_NGS_VARIANT_CALLING)
+        tmpMap.put("nf-core/scrnaseq", QExperimentType.Q_WF_NGS_SCELL_RNA_SEQ)
+        tmpMap.put("nf-core/smrnaseq", QExperimentType.Q_WF_NGS_SMALL_RNA_SEQ)
+        tmpMap.put("qbic-pipelines/cellranger", QExperimentType.Q_WF_NGS_SCELL_RNA_SEQ)
+        tmpMap.put("qbic-pipelines/rnadeseq", QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS)
         PIPELINE_TO_EXPERIMENT_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
-    private static final Map<QExperimentType, QSampleType> EXPERIMENT_TO_SAMPLE_TYPE
+    private static final Map<String, QSampleType> PIPELINE_TO_SAMPLE_TYPE
     static {
-        Map<QExperimentType, QSampleType> tmpMap = new HashMap<>()
-        tmpMap.put(QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS, QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
-        tmpMap.put(QExperimentType.Q_WF_NGS_VARIANT_CALLING, QSampleType.Q_WF_NGS_VARIANT_CALLING_RUN)
-        EXPERIMENT_TO_SAMPLE_TYPE = Collections.unmodifiableMap(tmpMap)
+        Map<String, QSampleType> tmpMap = new HashMap<>()
+        tmpMap.put("nf-core/atacseq", QSampleType.Q_WF_NGS_ATAC_SEQ_RUN)
+        tmpMap.put("nf-core/ampliseq", QSampleType.Q_WF_NGS_16S_AMPLICON_SEQ_RUN)
+        tmpMap.put("nf-core/bcellmacgic", QSampleType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RUN)
+        tmpMap.put("nf-core/chipseq", QSampleType.Q_WF_NGS_CHIP_SEQ_RUN)
+        tmpMap.put("nf-core/eager", QSampleType.Q_WF_NGS_ANCIENT_DNA_SEQ_RUN)
+        tmpMap.put("nf-core/hlatyping", QSampleType.Q_WF_NGS_HLATYPING_RUN)
+        tmpMap.put("nf-core/mag", QSampleType.Q_WF_NGS_SHOTGUN_METAGENOMICS_RUN)
+        tmpMap.put("nf-core/metaboigniter", QSampleType.Q_WF_MX_IDENTIFY_AND_QUANTIFY_RUN)
+        tmpMap.put("nf-core/methylseq", QSampleType.Q_WF_NGS_METHYLATION_ANALYSIS_RUN)
+        tmpMap.put("nf-core/mhcquant", QSampleType.Q_WF_LX_MHC_QUANTIFICATION_RUN)
+        tmpMap.put("nf-core/rnaseq", QSampleType.Q_WF_NGS_RNA_SEQ_RUN)
+        tmpMap.put("nf-core/sarek", QSampleType.Q_WF_NGS_VARIANT_CALLING_RUN)
+        tmpMap.put("nf-core/scrnaseq", QSampleType.Q_WF_NGS_SCELL_RNA_SEQ_RUN)
+        tmpMap.put("nf-core/smrnaseq", QSampleType.Q_WF_NGS_SMALL_RNA_SEQ_RUN)
+        tmpMap.put("qbic-pipelines/cellranger", QSampleType.Q_WF_NGS_SCELL_RNA_SEQ_RUN)
+        tmpMap.put("qbic-pipelines/rnadeseq", QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
+        PIPELINE_TO_SAMPLE_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
     private static final Map<String, QDatasetType> WF_NAME_TO_DATASET_TYPE
     static {
         Map<String, QDatasetType> tmpMap = new HashMap<>()
-        tmpMap.put("nf-core/rnaseq", QDatasetType.Q_WF_NGS_RNAEXPRESSIONANALYSIS_RESULTS)
+        tmpMap.put("nf-core/atacseq", QDatasetType.Q_WF_NGS_ATAC_SEQ_RESULTS)
+        tmpMap.put("nf-core/ampliseq", QDatasetType.Q_WF_NGS_16S_AMPLICON_SEQ_RESULTS)
+        tmpMap.put("nf-core/bcellmacgic", QDatasetType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RESULTS)
+        tmpMap.put("nf-core/chipseq", QDatasetType.Q_WF_NGS_CHIP_SEQ_RESULTS)
+        tmpMap.put("nf-core/eager", QDatasetType.Q_WF_NGS_ANCIENT_DNA_SEQ_RESULTS)
+        tmpMap.put("nf-core/hlatyping", QDatasetType.Q_WF_NGS_HLATYPING_RESULTS)
+        tmpMap.put("nf-core/mag", QDatasetType.Q_WF_NGS_SHOTGUN_METAGENOMICS_RESULTS)
+        tmpMap.put("nf-core/metaboigniter", QDatasetType.Q_WF_MX_IDENTIFY_AND_QUANTIFY_RESULTS)
+        tmpMap.put("nf-core/methylseq", QDatasetType.Q_WF_NGS_METHYLATION_ANALYSIS_RESULTS)
+        tmpMap.put("nf-core/mhcquant", QDatasetType.Q_WF_LX_MHC_QUANTIFICATION_RESULTS)
+        tmpMap.put("nf-core/rnaseq", QDatasetType.Q_WF_NGS_RNA_SEQ_RESULTS)
         tmpMap.put("nf-core/sarek", QDatasetType.Q_WF_NGS_VARIANT_CALLING_RESULTS)
+        tmpMap.put("nf-core/scrnaseq", QDatasetType.Q_WF_NGS_SCELL_RNA_SEQ_RESULTS)
+        tmpMap.put("nf-core/smrnaseq", QDatasetType.Q_WF_NGS_SMALL_RNA_SEQ_RESULTS)
+        tmpMap.put("qbic-pipelines/cellranger", QDatasetType.Q_WF_NGS_SCELL_RNA_SEQ_RESULTS)
+        tmpMap.put("qbic-pipelines/rnadeseq", QDatasetType.Q_WF_NGS_RNAEXPRESSIONANALYSIS_RESULTS)
         WF_NAME_TO_DATASET_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
@@ -202,8 +244,8 @@ class NfCoreResultRegistry implements Registry {
         existingExperimentIds.sort(Comparator.naturalOrder())
 
         // 4. Create new run result sample
-        def sampleType = determineSampleTypeFrom(analysisType).orElseThrow({
-            throw new RegistrationException("Cannot infere sample type for experiment $analysisType")
+        def sampleType = determineSampleTypeFrom(usedNfCorePipeline).orElseThrow({
+            throw new RegistrationException("Cannot infere sample type for pipeline $usedNfCorePipeline")
         })
         def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
@@ -327,10 +369,10 @@ class NfCoreResultRegistry implements Registry {
     }
 
     /*
-    Returns the associated analysis type based on the pipeline name.
+    Returns the associated sample type based on the pipeline name.
      */
-    private Optional<QSampleType> determineSampleTypeFrom(QExperimentType experimentType) {
-        def type = EXPERIMENT_TO_SAMPLE_TYPE.get(experimentType)
+    private Optional<QSampleType> determineSampleTypeFrom(String pipelineName) {
+        def type = PIPELINE_TO_SAMPLE_TYPE.get(pipelineName)
         return type ? Optional.of(type) : Optional.empty() as Optional<QSampleType>
     }
 
