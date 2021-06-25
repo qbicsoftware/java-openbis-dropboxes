@@ -10,7 +10,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
- * Basic project layout with a main entry point, the data set type determination and registry assignment
+ * Basic ETL layout with a main dataset entry point, the dataset type determination and registry assignment
 
  * Nf-core pipeline result registry
 
