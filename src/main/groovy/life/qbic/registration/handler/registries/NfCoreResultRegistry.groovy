@@ -51,24 +51,62 @@ class NfCoreResultRegistry implements Registry {
     private static final Map<String, QExperimentType> PIPELINE_TO_EXPERIMENT_TYPE
     static {
         Map<String, QExperimentType> tmpMap = new HashMap<>()
-        tmpMap.put("nf-core/rnaseq", QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS)
+        tmpMap.put("nf-core/atacseq", QExperimentType.Q_WF_NGS_ATAC_SEQ)
+        tmpMap.put("nf-core/bcellmacgic", QExperimentType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ)
+        tmpMap.put("nf-core/chipseq", QExperimentType.Q_WF_NGS_CHIP_SEQ)
+        tmpMap.put("nf-core/eager", QExperimentType.Q_WF_NGS_ANCIENT_DNA_SEQ)
+        tmpMap.put("nf-core/hlatyping", QExperimentType.Q_WF_NGS_HLATYPING)
+        tmpMap.put("nf-core/mag", QExperimentType.Q_WF_NGS_SHOTGUN_METAGENOMICS_ANALYIS)
+        tmpMap.put("nf-core/methylseq", QExperimentType.Q_WF_NGS_METHYLATION_ANALYSIS)
+        tmpMap.put("nf-core/mhcquant", QExperimentType.Q_WF_LX_MHC_QUANTIFICATION)
+        tmpMap.put("nf-core/rnaseq", QExperimentType.Q_WF_NGS_RNA_SEQ)
         tmpMap.put("nf-core/sarek", QExperimentType.Q_WF_NGS_VARIANT_CALLING)
+        tmpMap.put("nf-core/scrnaseq", QExperimentType.Q_WF_NGS_SCELL_RNA_SEQ)
+        tmpMap.put("nf-core/smrnaseq", QExperimentType.Q_WF_NGS_SMALL_RNA_SEQ)
+        tmpMap.put("qbic-pipelines/cellranger", QExperimentType.Q_WF_NGS_SCELL_RNA_SEQ)
+        tmpMap.put("qbic-pipelines/rnadeseq", QExperimentType.Q_WF_NGS_RNA_EXPRESSION_ANALYSIS)
         PIPELINE_TO_EXPERIMENT_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
     private static final Map<String, QSampleType> PIPELINE_TO_SAMPLE_TYPE
     static {
         Map<String, QSampleType> tmpMap = new HashMap<>()
-        tmpMap.put("nf-core/rnaseq", QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
+        tmpMap.put("nf-core/atacseq", QSampleType.Q_WF_NGS_ATAC_SEQ_RUN)
+        tmpMap.put("nf-core/bcellmacgic", QSampleType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RUN)
+        tmpMap.put("nf-core/chipseq", QSampleType.Q_WF_NGS_CHIP_SEQ_RUN)
+        tmpMap.put("nf-core/eager", QSampleType.Q_WF_NGS_ANCIENT_DNA_SEQ_RUN)
+        tmpMap.put("nf-core/hlatyping", QSampleType.Q_WF_NGS_HLATYPING_RUN)
+        tmpMap.put("nf-core/mag", QSampleType.Q_WF_NGS_SHOTGUN_METAGENOMICS_RUN)
+        tmpMap.put("nf-core/metaboigniter", QSampleType.Q_WF_MX_IDENTIFY_AND_QUANTIFY_RUN)
+        tmpMap.put("nf-core/methylseq", QSampleType.Q_WF_NGS_METHYLATION_ANALYSIS_RUN)
+        tmpMap.put("nf-core/mhcquant", QSampleType.Q_WF_LX_MHC_QUANTIFICATION_RUN)
+        tmpMap.put("nf-core/rnaseq", QSampleType.Q_WF_NGS_RNA_SEQ_RUN)
         tmpMap.put("nf-core/sarek", QSampleType.Q_WF_NGS_VARIANT_CALLING_RUN)
+        tmpMap.put("nf-core/scrnaseq", QSampleType.Q_WF_NGS_SCELL_RNA_SEQ_RUN)
+        tmpMap.put("nf-core/smrnaseq", QSampleType.Q_WF_NGS_SMALL_RNA_SEQ_RUN)
+        tmpMap.put("qbic-pipelines/cellranger", QSampleType.Q_WF_NGS_SCELL_RNA_SEQ_RUN)
+        tmpMap.put("qbic-pipelines/rnadeseq", QSampleType.Q_WF_NGS_RNA_EXPRESSION_RUN)
         PIPELINE_TO_SAMPLE_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
     private static final Map<String, QDatasetType> WF_NAME_TO_DATASET_TYPE
     static {
         Map<String, QDatasetType> tmpMap = new HashMap<>()
-        tmpMap.put("nf-core/rnaseq", QDatasetType.Q_WF_NGS_RNAEXPRESSIONANALYSIS_RESULTS)
+        tmpMap.put("nf-core/atacseq", QDatasetType.Q_WF_NGS_ATAC_SEQ_RESULTS)
+        tmpMap.put("nf-core/bcellmacgic", QDatasetType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RESULTS)
+        tmpMap.put("nf-core/chipseq", QDatasetType.Q_WF_NGS_CHIP_SEQ_RESULTS)
+        tmpMap.put("nf-core/eager", QDatasetType.Q_WF_NGS_ANCIENT_DNA_SEQ_RESULTS)
+        tmpMap.put("nf-core/hlatyping", QDatasetType.Q_WF_NGS_HLATYPING_RESULTS)
+        tmpMap.put("nf-core/mag", QDatasetType.Q_WF_NGS_SHOTGUN_METAGENOMICS_RESULTS)
+        tmpMap.put("nf-core/metaboigniter", QDatasetType.Q_WF_MX_IDENTIFY_AND_QUANTIFY_RESULTS)
+        tmpMap.put("nf-core/methylseq", QDatasetType.Q_WF_NGS_METHYLATION_ANALYSIS_RESULTS)
+        tmpMap.put("nf-core/mhcquant", QDatasetType.Q_WF_LX_MHC_QUANTIFICATION_RESULTS)
+        tmpMap.put("nf-core/rnaseq", QDatasetType.Q_WF_NGS_RNA_SEQ_RESULTS)
         tmpMap.put("nf-core/sarek", QDatasetType.Q_WF_NGS_VARIANT_CALLING_RESULTS)
+        tmpMap.put("nf-core/scrnaseq", QDatasetType.Q_WF_NGS_SCELL_RNA_SEQ_RESULTS)
+        tmpMap.put("nf-core/smrnaseq", QDatasetType.Q_WF_NGS_SMALL_RNA_SEQ_RESULTS)
+        tmpMap.put("qbic-pipelines/cellranger", QDatasetType.Q_WF_NGS_SCELL_RNA_SEQ_RESULTS)
+        tmpMap.put("qbic-pipelines/rnadeseq", QDatasetType.Q_WF_NGS_RNAEXPRESSIONANALYSIS_RESULTS)
         WF_NAME_TO_DATASET_TYPE = Collections.unmodifiableMap(tmpMap)
     }
 
