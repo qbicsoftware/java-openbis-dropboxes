@@ -8,6 +8,7 @@ package life.qbic.registration.types
 enum QExperimentType {
     Q_WF_LX_MHC_QUANTIFICATION,
     Q_WF_MX_IDENTIFY_AND_QUANTIFY,
+    Q_WF_NGS_16S_AMPLICON_SEQ,
     Q_WF_NGS_ATAC_SEQ,
     Q_WF_NGS_ANCIENT_DNA_SEQ,
     Q_WF_NGS_BCELL_REPERTOIRE_SEQ,
