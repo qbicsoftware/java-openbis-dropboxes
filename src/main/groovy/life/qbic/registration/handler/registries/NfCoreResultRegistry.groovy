@@ -59,6 +59,7 @@ class NfCoreResultRegistry implements Registry {
         tmpMap.put("nf-core/hlatyping", QExperimentType.Q_WF_NGS_HLATYPING)
         tmpMap.put("nf-core/mag", QExperimentType.Q_WF_NGS_SHOTGUN_METAGENOMICS_ANALYIS)
         tmpMap.put("nf-core/methylseq", QExperimentType.Q_WF_NGS_METHYLATION_ANALYSIS)
+        tmpMap.put("nf-core/methaboigniter", QExperimentType.Q_WF_MX_IDENTIFY_AND_QUANTIFY)
         tmpMap.put("nf-core/mhcquant", QExperimentType.Q_WF_LX_MHC_QUANTIFICATION)
         tmpMap.put("nf-core/rnaseq", QExperimentType.Q_WF_NGS_RNA_SEQ)
         tmpMap.put("nf-core/sarek", QExperimentType.Q_WF_NGS_VARIANT_CALLING)
