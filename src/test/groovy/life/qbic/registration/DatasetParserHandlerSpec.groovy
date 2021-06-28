@@ -3,6 +3,7 @@ package life.qbic.registration
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DatasetValidationException
+import life.qbic.registration.handler.DatasetParserHandler
 import spock.lang.Specification
 
 import java.nio.file.Path

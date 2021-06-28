@@ -1,4 +1,4 @@
-package life.qbic.registration.handler.registries
+package life.qbic.registration.registries
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
