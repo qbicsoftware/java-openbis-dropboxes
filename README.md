@@ -71,7 +71,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 ```
 
 We need to extend from the abstract class `AbstractJavaDataSetRegistrationDropboxV2`, which serves the entry
-point we need to define in the [dropbox configuration file](). The abstract method ``process()`` is then called
+point we need to define in the [dropbox configuration file](https://github.com/qbicsoftware/etl-scripts/blob/master/drop-boxes/register-all-dropbox/plugin.properties). The abstract method ``process()`` is then called
 by the openBIS DSS runtime, one a dataset is dropped in the dropbox and a marker file has been created.
 
 First, we try to parse and validate the incoming dataset. This is done by the 
