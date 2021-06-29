@@ -1,4 +1,4 @@
-package life.qbic.registration
+package life.qbic.registration.handler
 
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetParser
