@@ -13,7 +13,7 @@ Overview:
 
 ## Build JAR artifact
 
-Clone the package with 
+Clone the repository with 
 
 ```
 git clone git@github.com:qbicsoftware/java-openbis-dropboxes.git
@@ -72,12 +72,12 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
 We need to extend from the abstract class `AbstractJavaDataSetRegistrationDropboxV2`, which serves the entry
 point we need to define in the [dropbox configuration file](https://github.com/qbicsoftware/etl-scripts/blob/master/drop-boxes/register-all-dropbox/plugin.properties). The abstract method ``process()`` is then called
-by the openBIS DSS runtime, one a dataset is dropped in the dropbox and a marker file has been created.
+by the openBIS DSS runtime, once a dataset is dropped in the dropbox and a marker file has been created.
 
 First, we try to parse and validate the incoming dataset. This is done by the 
 [DataSetParserHandler](src/main/groovy/life/qbic/registration/handler/DatasetParserHandler.groovy).
-The handler takes a list of available `DataSetParsers`, defined in our [core-utils library](https://github.com/qbicsoftware/core-utils-lib/blob/master/src/main/groovy/life/qbic/datasets/parsers/DatasetParser.groovy).
-The approach is simple brute force, the first parser that throws no exception identifies the dataset and
+The handler takes a list of available `DataSetParsers`, parsers that implement the interface defined in our [core-utils library](https://github.com/qbicsoftware/core-utils-lib/blob/master/src/main/groovy/life/qbic/datasets/parsers/DatasetParser.groovy).
+The approach is simple brute force, the first parser that is able to identify the dataset
 determines the type of the returned data set.
 
 ```groovy
@@ -110,7 +110,7 @@ static Optional<Registry> getRegistryFor(Object dataset) {
   }
 ```
 
-Once you are ready you can just execute the registration, by calling the ``executeRegistration()`` method
+Once a registry is assigned just execute the registration, by calling the ``executeRegistration()`` method
 on the registry. 
 
 ### Add a new dataset parser
@@ -141,7 +141,7 @@ Of course, if you have added a new data set parser, then you most likely need a 
 registry, that will handle the final registration in openBIS.
 
 For this make sure to implement the [Registry interface](src/main/groovy/life/qbic/registration/handler/Registry.groovy). Once you have provided an implementation
-of the interface, you can add your new registry to the [Registration handler](src/main/groovy/life/qbic/registration/handler/RegistrationHandler.groovy):
+of the interface, add your new registry to the [Registration handler](src/main/groovy/life/qbic/registration/handler/RegistrationHandler.groovy):
 
 ```groovy
 static Optional<Registry> getRegistryFor(Object dataset) {
@@ -157,4 +157,4 @@ static Optional<Registry> getRegistryFor(Object dataset) {
   return registry
   }
 ```
-**Note:** Please make sure that you have always an **unambiguous assignment** of a certain dataset type to a registry. 
+**Note:** Please make sure that you always have an **unambiguous assignment** of a certain dataset type to a registry. 
