@@ -10,7 +10,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 **Added**
 
 * Some minor class refactoring
-* Project documentation
+* Project documentation [#10](https://github.com/qbicsoftware/java-openbis-dropboxes/pull/10)
 
 **Fixed**
 
