@@ -1,4 +1,4 @@
-package life.qbic.registration.handler.registries
+package life.qbic.registration.registries
 
 import groovy.json.JsonSlurper
 import io.micronaut.http.HttpRequest

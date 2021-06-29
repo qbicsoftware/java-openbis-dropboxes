@@ -1,7 +1,7 @@
 package life.qbic.registration.handler
 
 import life.qbic.datamodel.datasets.NfCorePipelineResult
-import life.qbic.registration.handler.registries.NfCoreResultRegistry
+import life.qbic.registration.registries.NfCoreResultRegistry
 
 /**
  * Determines the correct registry for a given dataset type.

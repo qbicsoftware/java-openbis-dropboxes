@@ -4,6 +4,7 @@ import ch.systemsx.cisd.etlserver.registrator.api.v2.AbstractJavaDataSetRegistra
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import groovy.util.logging.Log4j2
 import life.qbic.datasets.parsers.DatasetParser
+import life.qbic.registration.handler.DatasetParserHandler
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.RegistrationHandler
 import life.qbic.registration.handler.Registry
@@ -27,7 +28,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
         Path relevantData = new File(incomingPath, incomingName).toPath()
         log.info("Processing incoming dataset '${relevantData.toString()}'...")
-        
+
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(relevantData)
 
