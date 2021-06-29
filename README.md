@@ -47,7 +47,7 @@ then this step exits with an identification exception and manual intervention is
 **Validate dataset structure**. In this step, the dataset is validated. A dataset is valid, if its structure follows a certain specification. Every dataset structure
 is expressed in a JSON schema, maintained in the central [data model library](https://github.com/qbicsoftware/data-model-lib). 
 
-**Assign ETL registry**. After the dataset has been identified and is found valid, the ETL registry is assigned. The assignment must be unambiguous, 
+**Assign ETL registry**. After the dataset has been identified and is found valid, the ETL registry is assigned by the dataset type. The assignment must be unambiguous, 
 meaning that one registry takes care of one dataset type!
 
 **Execute ETL registry**. This is the last crucial step. The registry is triggered and tries to register
