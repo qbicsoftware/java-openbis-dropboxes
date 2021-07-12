@@ -4,6 +4,20 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.0
+-----
+
+**Added**
+
+* MaxQuantResultRegistry for MaxQuant analysis result datasets
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
+
 1.0.1 (2021-06-28)
 ------------------
 

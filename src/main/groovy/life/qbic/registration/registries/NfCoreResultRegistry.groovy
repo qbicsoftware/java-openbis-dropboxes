@@ -293,32 +293,7 @@ class NfCoreResultRegistry implements Registry {
      */
     private Optional<List<String>> getInputSamples() {
         def sampleIdPath = Paths.get(datasetRootPath.toString(), pipelineResult.sampleIds.relativePath)
-        def sampleIds = parseSampleIdsFrom(sampleIdPath)
-        sampleIds ? Optional.of(sampleIds) : Optional.empty() as Optional<List<String>>
-    }
-
-    /*
-    Iterates through the lines of a file and extracts the sample codes.
-    The sample codes must be line separated. All trailing whitespace will get trimmed.
-     */
-    private List<String> parseSampleIdsFrom(Path file) {
-        def sampleIds = []
-        try {
-            def fileRowEntries = new File(file.toUri()).readLines()
-            for (String row : fileRowEntries) {
-                sampleIds.add(row.trim())
-            }
-        } catch (Exception e) {
-            switch (e) {
-                case FileNotFoundException:
-                    log.error "File ${file} was not found."
-                    break
-                default:
-                    log.error "Could not read from file ${file}."
-                    log.error "Reason: ${e.stackTrace.join("\n")}"
-            }
-        }
-        return sampleIds
+        return Utils.parseSampleIdsFrom(sampleIdPath)
     }
 
     /*
