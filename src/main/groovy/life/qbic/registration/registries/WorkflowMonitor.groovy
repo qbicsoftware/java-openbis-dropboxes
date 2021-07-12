@@ -1,4 +1,4 @@
-package life.qbic.registration.handler.registries
+package life.qbic.registration.registries
 
 /**
  * <p>Enables interaction with a backend workflow monitor system.</p>
