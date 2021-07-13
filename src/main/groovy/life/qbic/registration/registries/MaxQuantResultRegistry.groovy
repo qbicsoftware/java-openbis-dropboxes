@@ -76,7 +76,7 @@ class MaxQuantResultRegistry implements Registry{
         // the pipeline run
         List<SampleId> sampleIdList = Utils.validateSampleIds(sampleIds)
 
-        Context context = Utils.getContext(sampleIds[0], transaction.getSearchService()).orElseThrow({
+        Context context = Utils.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
             throw new RegistrationException(("Could not determine context for samples ${sampleIdList}"))
         })
 
