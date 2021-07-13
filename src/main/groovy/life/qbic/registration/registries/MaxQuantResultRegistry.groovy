@@ -3,6 +3,8 @@ package life.qbic.registration.registries
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.datastructure.folders.maxquant.MaxQuantRun
+import life.qbic.registration.Context
+import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
 
@@ -57,7 +59,11 @@ class MaxQuantResultRegistry implements Registry{
         return Utils.parseSampleIdsFrom(sampleIdPath)
     }
 
-    private void register(IDataSetRegistrationTransactionV2 transactionV2, List<String> sampleIds) {
+    private void register(IDataSetRegistrationTransactionV2 transaction, List<String> sampleIds) {
+        List<SampleId> sampleIdList = Utils.validateSampleIds(sampleIds)
         // Todo implement registration in openBIS
+        Context context = Utils.getContext(sampleIds[0], transaction.getSearchService()).orElseThrow({
+            throw new RegistrationException(("Could not determine context for samples ${sampleIdList}"))
+        })
     }
 }
