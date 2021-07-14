@@ -7,7 +7,7 @@ import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmuta
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import groovy.util.logging.Log4j2
-import life.qbic.datamodel.datasets.datastructure.folders.maxquant.MaxQuantRun
+import life.qbic.datamodel.datasets.MaxQuantRunResult
 import life.qbic.registration.AnalysisResultId
 import life.qbic.registration.Context
 import life.qbic.registration.ExperimentId
@@ -20,6 +20,7 @@ import life.qbic.registration.types.QPropertyTypes
 import life.qbic.registration.types.QSampleType
 
 import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * <p>Registration of MaxQuant analysis result datasets.</p>
@@ -34,14 +35,14 @@ class MaxQuantResultRegistry implements Registry{
 
     private Path datasetRootPath
 
-    private final MaxQuantRun maxQuantRun
+    private final MaxQuantRunResult maxQuantRun
 
     /**
      * Creates MaxQuantResultRegistry instance, given a MaxQuant result dataset.
      * @param maxQuantRun the MaxQuant result dataset
      * @since 1.1.0
      */
-    MaxQuantResultRegistry(MaxQuantRun maxQuantRun) {
+    MaxQuantResultRegistry(MaxQuantRunResult maxQuantRun) {
         this.maxQuantRun = maxQuantRun
     }
 
