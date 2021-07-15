@@ -4,6 +4,20 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.0
+-----
+
+**Added**
+
+* Add MaxQuantResultRegistry for MaxQuant analysis result datasets (`#12 <https://github.com/qbicsoftware/java-openbis-dropboxes/pull/12>`_)
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
+
 1.0.1 (2021-06-28)
 ------------------
 
@@ -35,5 +49,4 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 **Dependencies**
 
 **Deprecated**
-
 

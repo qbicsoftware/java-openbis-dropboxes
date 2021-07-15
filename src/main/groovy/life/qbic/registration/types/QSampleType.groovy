@@ -7,6 +7,7 @@ package life.qbic.registration.types
  */
 enum QSampleType {
     Q_WF_LX_MHC_QUANTIFICATION_RUN,
+    Q_WF_MS_MAXQUANT_RUN,
     Q_WF_MX_IDENTIFY_AND_QUANTIFY_RUN,
     Q_WF_NGS_16S_AMPLICON_SEQ_RUN,
     Q_WF_NGS_ATAC_SEQ_RUN,
