@@ -28,7 +28,7 @@ class Utils {
      * @since 1.1.0
      */
     static Optional<List<String>> parseSampleIdsFrom(Path file) {
-        def sampleIds = []
+        List<String> sampleIds = []
         try {
             def fileRowEntries = new File(file.toUri()).readLines()
             for (String row : fileRowEntries) {
@@ -51,15 +51,16 @@ class Utils {
      * <p> Tries to determine the registration {@link Context} based on a given sample identifier.<p>
      * @param sampleId the sample id to infer the {@link Context}
      * @param searchService the openBIS search service
-     * @return
+     * @return the current registration context
+     * @since 1.1.0
      */
     static Optional<Context> getContext(SampleId sampleId,
                                         ISearchService searchService) {
-        SearchCriteria sc = new SearchCriteria()
-        sc.addMatchClause(
+        SearchCriteria searchCriteria = new SearchCriteria()
+        searchCriteria.addMatchClause(
                 SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE, sampleId.toString())
         )
-        List<ISampleImmutable> searchResult = searchService.searchForSamples(sc)
+        List<ISampleImmutable> searchResult = searchService.searchForSamples(searchCriteria)
         if (!searchResult) {
             return Optional.empty()
         }
@@ -71,12 +72,13 @@ class Utils {
     }
 
     /**
-     * <p>Validates and converts a list of String sample ids into a list of {@link SampleId}.</p>
+     * <p>Converts and intrinsically validates a list of String sample ids into a list of {@link SampleId}.</p>
      * @param sampleIdList a list of sample ids
      * @return a list of converted and validated sample ids
      * @throws RuntimeException if at least one sample id cannot be converted
+     * @since 1.1.0
      */
-    static List<SampleId> validateSampleIds(List<String> sampleIdList) throws RuntimeException {
+    static List<SampleId> convertSampleIds(List<String> sampleIdList) throws RuntimeException {
         def convertedSampleIds = []
         for(String sampleId : sampleIdList) {
             def convertedId = SampleId.from(sampleId).orElseThrow( {

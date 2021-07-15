@@ -180,7 +180,7 @@ class NfCoreResultRegistry implements Registry {
         // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
-        List<SampleId> sampleIdList = Utils.validateSampleIds(sampleIds)
+        List<SampleId> sampleIdList = Utils.convertSampleIds(sampleIds)
 
         this.context = Utils.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
             throw new RegistrationException("Could not determine context for samples ${sampleIdList}")
