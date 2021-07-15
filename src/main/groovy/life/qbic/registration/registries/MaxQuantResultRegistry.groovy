@@ -14,6 +14,8 @@ import life.qbic.registration.ExperimentId
 import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
+import life.qbic.registration.registries.shared.RegistrationContextHandler
+import life.qbic.registration.registries.shared.SampleIdHandler
 import life.qbic.registration.types.QDatasetType
 import life.qbic.registration.types.QExperimentType
 import life.qbic.registration.types.QPropertyTypes
@@ -68,16 +70,16 @@ class MaxQuantResultRegistry implements Registry{
 
     private Optional<List<String>> getInputSamples() {
         def sampleIdPath = Paths.get(datasetRootPath.toString(), maxQuantRun.sampleIds.relativePath)
-        return Utils.parseSampleIdsFrom(sampleIdPath)
+        return SampleIdHandler.parseSampleIdsFrom(sampleIdPath)
     }
 
     private void register(IDataSetRegistrationTransactionV2 transaction, List<String> sampleIds) {
         // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
-        List<SampleId> sampleIdList = Utils.convertSampleIds(sampleIds)
+        List<SampleId> sampleIdList = SampleIdHandler.convertSampleIds(sampleIds)
 
-        Context context = Utils.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
+        Context context = RegistrationContextHandler.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
             throw new RegistrationException(("Could not determine context for samples ${sampleIdList}"))
         })
 

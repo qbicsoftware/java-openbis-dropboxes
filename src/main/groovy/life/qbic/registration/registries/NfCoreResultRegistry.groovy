@@ -8,14 +8,14 @@ import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchServic
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.NfCorePipelineResult
-import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
-import life.qbic.datamodel.dtos.projectmanagement.ProjectSpace
 import life.qbic.registration.AnalysisResultId
 import life.qbic.registration.Context
 import life.qbic.registration.ExperimentId
 import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
+import life.qbic.registration.registries.shared.RegistrationContextHandler
+import life.qbic.registration.registries.shared.SampleIdHandler
 import life.qbic.registration.types.QDatasetType
 import life.qbic.registration.types.QExperimentType
 import life.qbic.registration.types.QPropertyTypes
@@ -180,9 +180,9 @@ class NfCoreResultRegistry implements Registry {
         // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
-        List<SampleId> sampleIdList = Utils.convertSampleIds(sampleIds)
+        List<SampleId> sampleIdList = SampleIdHandler.convertSampleIds(sampleIds)
 
-        this.context = Utils.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
+        this.context = RegistrationContextHandler.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
             throw new RegistrationException("Could not determine context for samples ${sampleIdList}")
         })
 
@@ -266,7 +266,7 @@ class NfCoreResultRegistry implements Registry {
      */
     private Optional<List<String>> getInputSamples() {
         def sampleIdPath = Paths.get(datasetRootPath.toString(), pipelineResult.sampleIds.relativePath)
-        return Utils.parseSampleIdsFrom(sampleIdPath)
+        return SampleIdHandler.parseSampleIdsFrom(sampleIdPath)
     }
 
     /*

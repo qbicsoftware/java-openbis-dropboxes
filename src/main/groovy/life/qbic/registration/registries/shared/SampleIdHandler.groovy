@@ -1,24 +1,17 @@
-package life.qbic.registration.registries
+package life.qbic.registration.registries.shared
 
-import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
-import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchService
-import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import groovy.util.logging.Log4j2
-import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
-import life.qbic.datamodel.dtos.projectmanagement.ProjectSpace
-import life.qbic.registration.Context
 import life.qbic.registration.SampleId
 
 import java.nio.file.Path
 
 /**
- * <p>A collection of useful methods that can be shared among the different registries.</p>
+ * <p>Provides central sample id handling logic<p>
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
 @Log4j2
-class Utils {
-
+class SampleIdHandler {
     /**
      * <p>Iterates through the lines of a file and extracts the sample codes.
      * The sample codes must be line separated.
@@ -48,31 +41,7 @@ class Utils {
     }
 
     /**
-     * <p> Tries to determine the registration {@link Context} based on a given sample identifier.<p>
-     * @param sampleId the sample id to infer the {@link Context}
-     * @param searchService the openBIS search service
-     * @return the current registration context
-     * @since 1.1.0
-     */
-    static Optional<Context> getContext(SampleId sampleId,
-                                        ISearchService searchService) {
-        SearchCriteria searchCriteria = new SearchCriteria()
-        searchCriteria.addMatchClause(
-                SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE, sampleId.toString())
-        )
-        List<ISampleImmutable> searchResult = searchService.searchForSamples(searchCriteria)
-        if (!searchResult) {
-            return Optional.empty()
-        }
-        ProjectSpace space = new ProjectSpace(searchResult[0].getSpace())
-        ProjectCode code = sampleId.getProjectCode()
-
-        Context context = new Context(projectSpace: space, projectCode: code)
-        return Optional.of(context)
-    }
-
-    /**
-     * <p>Converts and intrinsically validates a list of String sample ids into a list of {@link SampleId}.</p>
+     * <p>Converts and intrinsically validates a list of String sample ids into a list of {@link life.qbic.registration.SampleId}.</p>
      * @param sampleIdList a list of sample ids
      * @return a list of converted and validated sample ids
      * @throws RuntimeException if at least one sample id cannot be converted
