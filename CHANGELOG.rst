@@ -10,6 +10,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 **Added**
 
 * Add MaxQuantResultRegistry for MaxQuant analysis result datasets (`#12 <https://github.com/qbicsoftware/java-openbis-dropboxes/pull/12>`_)
+* Route MaxQuant result datasets to the `MaxQuantResultRegistry`
 
 **Fixed**
 
