@@ -1,6 +1,8 @@
 package life.qbic.registration.handler
 
+import life.qbic.datamodel.datasets.MaxQuantRunResult
 import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.registration.registries.MaxQuantResultRegistry
 import life.qbic.registration.registries.NfCoreResultRegistry
 
 /**
@@ -19,6 +21,7 @@ class RegistrationHandler {
      * <p>Currently supported dataset types:</p>
      * <ul>
      *     <li>{@link NfCoreResultRegistry}</li>
+     *     <li>{@link MaxQuantResultRegistry}</li>
      * </ul>
      *
      * @param dataset the actual dataset that needs to be registered.
@@ -29,6 +32,9 @@ class RegistrationHandler {
         switch (dataset) {
             case NfCorePipelineResult:
                 registry = Optional.of(new NfCoreResultRegistry(dataset as NfCorePipelineResult))
+                break
+            case MaxQuantRunResult:
+                registry = Optional.of(new MaxQuantResultRegistry(dataset as MaxQuantRunResult))
                 break
             default:
                 registry = Optional.empty()
