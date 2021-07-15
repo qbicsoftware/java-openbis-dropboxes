@@ -116,7 +116,7 @@ class MaxQuantResultRegistry implements Registry{
             try {
                 ExperimentId id = ExperimentId.parseFrom(experiment.experimentIdentifier)
                 existingExperimentIds.add(id)
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
                 log.error "Cannot process experiment with id ${experiment.getExperimentIdentifier()}"
             }
         }
