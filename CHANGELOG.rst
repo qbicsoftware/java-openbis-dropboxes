@@ -15,10 +15,13 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 * Learn MaxQuant analysis result dataset structure (`<https://github.com/qbicsoftware/java-openbis-dropboxes/pull/14>`_)
 
-
 **Fixed**
 
 **Dependencies**
+
+* Bump data-model-lib from 2.9.0 to 2.10.0
+
+* Bump core-utils-lib from 1.8.0 to 1.9.0
 
 **Deprecated**
 
