@@ -19,6 +19,11 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Dependencies**
 
+* Increase version for ``life.qbic:data-model-lib`` from ``2.8.1 -> 2.10.0``
+
+
+* Increase version for ``life.qbic:core-utils-lib`` from ``1.8.0 -> 1-9-0``
+
 * Bump data-model-lib from 2.9.0 to 2.10.0
 
 * Bump core-utils-lib from 1.8.0 to 1.9.0
