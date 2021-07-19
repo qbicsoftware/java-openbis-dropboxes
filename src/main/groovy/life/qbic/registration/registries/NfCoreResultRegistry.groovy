@@ -16,6 +16,8 @@ import life.qbic.registration.ExperimentId
 import life.qbic.registration.SampleId
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.Registry
+import life.qbic.registration.registries.shared.RegistrationContextHandler
+import life.qbic.registration.registries.shared.SampleIdHandler
 import life.qbic.registration.types.QDatasetType
 import life.qbic.registration.types.QExperimentType
 import life.qbic.registration.types.QPropertyTypes
@@ -57,7 +59,7 @@ class NfCoreResultRegistry implements Registry {
         tmpMap.put("nf-core/chipseq", QExperimentType.Q_WF_NGS_CHIP_SEQ)
         tmpMap.put("nf-core/eager", QExperimentType.Q_WF_NGS_ANCIENT_DNA_SEQ)
         tmpMap.put("nf-core/hlatyping", QExperimentType.Q_WF_NGS_HLATYPING)
-        tmpMap.put("nf-core/mag", QExperimentType.Q_WF_NGS_SHOTGUN_METAGENOMICS_ANALYIS)
+        tmpMap.put("nf-core/mag", QExperimentType.Q_WF_NGS_SHOTGUN_METAGENOMICS)
         tmpMap.put("nf-core/methylseq", QExperimentType.Q_WF_NGS_METHYLATION_ANALYSIS)
         tmpMap.put("nf-core/methaboigniter", QExperimentType.Q_WF_MX_IDENTIFY_AND_QUANTIFY)
         tmpMap.put("nf-core/mhcquant", QExperimentType.Q_WF_LX_MHC_QUANTIFICATION)
@@ -170,24 +172,7 @@ class NfCoreResultRegistry implements Registry {
             throw new RegistrationException(e.getMessage())
         }
     }
-
-    private static Optional<Context> getContext(SampleId sampleId,
-                                                ISearchService searchService) {
-        SearchCriteria sc = new SearchCriteria()
-        sc.addMatchClause(
-                SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE, sampleId.toString())
-        )
-        List<ISampleImmutable> searchResult = searchService.searchForSamples(sc)
-        if (!searchResult) {
-            return Optional.empty()
-        }
-        ProjectSpace space = new ProjectSpace(searchResult[0].getSpace())
-        ProjectCode code = sampleId.getProjectCode()
-
-        Context context = new Context(projectSpace: space, projectCode: code)
-        return Optional.of(context)
-    }
-
+  
     /*
     Does the final registration of the dataset in openBIS.
      */
@@ -197,10 +182,10 @@ class NfCoreResultRegistry implements Registry {
         // 1. Get the openBIS samples the datasets belong to
         // Will contain the openBIS samples which data served as input data for
         // the pipeline run
-        List<SampleId> sampleIdList = validateSampleIds(sampleIds)
+        List<SampleId> sampleIdList = SampleIdHandler.convertSampleIds(sampleIds)
 
-        this.context = getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
-            new RegistrationException("Could not determine context for samples ${sampleIdList}")
+        this.context = RegistrationContextHandler.getContext(sampleIdList[0], transaction.getSearchService()).orElseThrow({
+            throw new RegistrationException("Could not determine context for samples ${sampleIdList}")
         })
 
         List<ISample> parentSamples = []
@@ -278,47 +263,12 @@ class NfCoreResultRegistry implements Registry {
         transaction.moveFile(this.datasetRootPath.toString(), dataset)
     }
 
-    private List<SampleId> validateSampleIds(List<String> sampleIdList) throws RuntimeException {
-        def convertedSampleIds = []
-        for(String sampleId : sampleIdList) {
-            def convertedId = SampleId.from(sampleId).orElseThrow( {
-                throw new RuntimeException("$sampleId does not seem to contain a valid sample id.")})
-            convertedSampleIds.add(convertedId)
-        }
-        return convertedSampleIds
-    }
-
     /*
     Returns the measurement sample codes used for the analysis as input.
      */
     private Optional<List<String>> getInputSamples() {
         def sampleIdPath = Paths.get(datasetRootPath.toString(), pipelineResult.sampleIds.relativePath)
-        def sampleIds = parseSampleIdsFrom(sampleIdPath)
-        sampleIds ? Optional.of(sampleIds) : Optional.empty() as Optional<List<String>>
-    }
-
-    /*
-    Iterates through the lines of a file and extracts the sample codes.
-    The sample codes must be line separated. All trailing whitespace will get trimmed.
-     */
-    private List<String> parseSampleIdsFrom(Path file) {
-        def sampleIds = []
-        try {
-            def fileRowEntries = new File(file.toUri()).readLines()
-            for (String row : fileRowEntries) {
-                sampleIds.add(row.trim())
-            }
-        } catch (Exception e) {
-            switch (e) {
-                case FileNotFoundException:
-                    log.error "File ${file} was not found."
-                    break
-                default:
-                    log.error "Could not read from file ${file}."
-                    log.error "Reason: ${e.stackTrace.join("\n")}"
-            }
-        }
-        return sampleIds
+        return SampleIdHandler.parseSampleIdsFrom(sampleIdPath)
     }
 
     /*

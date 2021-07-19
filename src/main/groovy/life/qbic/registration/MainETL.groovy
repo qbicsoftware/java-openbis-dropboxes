@@ -9,6 +9,7 @@ import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.RegistrationHandler
 import life.qbic.registration.handler.Registry
 import life.qbic.utils.BioinformaticAnalysisParser
+import life.qbic.utils.MaxQuantParser
 import life.qbic.utils.NanoporeParser
 
 import java.nio.file.Path
@@ -18,6 +19,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
     static List<DatasetParser<?>> listOfParsers = [
             new BioinformaticAnalysisParser(),
+            new MaxQuantParser(),
             new NanoporeParser()
     ] as List<DatasetParser<?>>
 
@@ -53,4 +55,3 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         }
     }
 }
-
