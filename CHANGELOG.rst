@@ -37,7 +37,6 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Deprecated**
 
-
 1.0.0 (2021-06-25)
 ------------------
 
