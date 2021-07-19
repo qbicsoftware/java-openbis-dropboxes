@@ -8,6 +8,8 @@ import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISearchServic
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.datamodel.dtos.projectmanagement.ProjectCode
+import life.qbic.datamodel.dtos.projectmanagement.ProjectSpace
 import life.qbic.registration.AnalysisResultId
 import life.qbic.registration.Context
 import life.qbic.registration.ExperimentId
@@ -170,7 +172,7 @@ class NfCoreResultRegistry implements Registry {
             throw new RegistrationException(e.getMessage())
         }
     }
-
+  
     /*
     Does the final registration of the dataset in openBIS.
      */
