@@ -4,6 +4,22 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.1 (2021-07-20)
+------------------
+
+**Added**
+
+**Fixed**
+
+* Remove NanoporeParser to fix ``GroovyCastException`` (`#17 <https://github.com/qbicsoftware/java-openbis-dropboxes/pull/17>`_)
+
+**Dependencies**
+
+* Increase version for ``life.qbic:core-utils-lib`` from ``1.9.0-> 1.9.1``
+
+**Deprecated**
+
+
 1.1.0 (2021-07-19)
 ------------------
 
