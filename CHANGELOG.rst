@@ -4,6 +4,19 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.4 (2021-07-20)
+------------------
+
+**Added**
+
+**Fixed**
+
+* Fix a misleading NPE, that is thrown during a wrong type conversion in a for loop.
+
+**Dependencies**
+
+**Deprecated**
+
 1.1.3 (2021-07-20)
 ------------------
 
