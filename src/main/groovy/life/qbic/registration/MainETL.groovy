@@ -37,12 +37,12 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
             handler.getObservedExceptions().each {
                 log.error(it.message, it.getStackTrace().join("\n"))
             }
-            throw new Exception("Data structure could not be parsed.")
+            throw new RegistrationException("Data structure could not be parsed.")
         })
 
         Registry registry =  RegistrationHandler.getRegistryFor(concreteResult).orElseThrow(
                 {
-                    throw new Exception("No registry found for data structure.")
+                    throw new RegistrationException("No registry found for data structure.")
                 }
         )
 
@@ -50,7 +50,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
             registry.executeRegistration(transaction, relevantData)
         } catch (RegistrationException e) {
             log.error(e.getMessage())
-            throw new Exception("Could not register data! Manual intervention is needed.")
+            throw new RegistrationException("Could not register data! Manual intervention is needed.")
         }
     }
 }
