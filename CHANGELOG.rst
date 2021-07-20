@@ -4,6 +4,22 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.2 (2021-07-20)
+------------------
+
+**Added**
+
+**Fixed**
+
+* Fix ``java.lang.reflect.UndeclaredThrowableException``, when the dataset could not parsed by any parser successfully.
+
+**Dependencies**
+
+* Increase version for ``life.qbic:core-utils-lib`` from ``1.9.1-> 1.9.2``
+
+**Deprecated**
+
+
 1.1.1 (2021-07-20)
 ------------------
 
