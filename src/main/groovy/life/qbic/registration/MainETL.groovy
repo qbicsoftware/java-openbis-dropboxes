@@ -19,8 +19,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
     static List<DatasetParser<?>> listOfParsers = [
             new BioinformaticAnalysisParser(),
-            new MaxQuantParser(),
-            new NanoporeParser()
+            new MaxQuantParser()
     ] as List<DatasetParser<?>>
 
     @Override
