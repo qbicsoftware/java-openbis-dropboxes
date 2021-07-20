@@ -4,13 +4,14 @@ import ch.systemsx.cisd.etlserver.registrator.api.v2.AbstractJavaDataSetRegistra
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import groovy.util.logging.Log4j2
 import life.qbic.datasets.parsers.DatasetParser
+import life.qbic.datasets.parsers.DataParserException
+import life.qbic.datasets.parsers.DatasetValidationException
 import life.qbic.registration.handler.DatasetParserHandler
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.RegistrationHandler
 import life.qbic.registration.handler.Registry
 import life.qbic.utils.BioinformaticAnalysisParser
 import life.qbic.utils.MaxQuantParser
-import life.qbic.utils.NanoporeParser
 
 import java.nio.file.Path
 
@@ -34,9 +35,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         Optional<?> result = handler.parseFrom(relevantData)
 
         Object concreteResult = result.orElseThrow({
-            handler.getObservedExceptions().each {
-                log.error(it.message, it.getStackTrace().join("\n"))
-            }
+            logExceptionReport(handler.getObservedExceptions())
             throw new RegistrationException("Data structure could not be parsed.")
         })
 
@@ -51,6 +50,30 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         } catch (RegistrationException e) {
             log.error(e.getMessage())
             throw new RegistrationException("Could not register data! Manual intervention is needed.")
+        }
+    }
+
+    private static logExceptionReport(List<Exception> observedExceptions) {
+        log.error("Detailed exception report:")
+        log.error("start---------------------")
+        for (Exception exception : observedExceptions) {
+            switch (exception) {
+                case DataParserException:
+                    log.error(exception.getMessage())
+                    break
+                case DatasetValidationException:
+                    logDatasetValidations(exception as DatasetValidationException)
+                    break
+                default:
+                    log.error(exception.stackTrace.join("\n"))
+            }
+        }
+        log.error("end-----------------------")
+    }
+
+    private static logDatasetValidations(DatasetValidationException exception) {
+        for(String message : exception.getCauses()) {
+            log.error("Validation exception: ${message}.")
         }
     }
 }
