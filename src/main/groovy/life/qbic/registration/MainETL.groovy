@@ -72,7 +72,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
     }
 
     private static logDatasetValidations(DatasetValidationException exception) {
-        for(String message : exception.allExceptions) {
+        for(String message : exception.getCauses()) {
             log.error("Validation exception: ${message}.")
         }
     }
