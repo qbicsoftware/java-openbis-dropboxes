@@ -4,6 +4,19 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.5 (2021-09-14)
+------------------
+
+**Added**
+
+**Fixed**
+
+**Dependencies**
+
+* Increase version for ``life.qbic:core-utils-lib`` from ``1.9.2-> 1.10.0``
+
+**Deprecated**
+
 1.1.4 (2021-07-20)
 ------------------
 
