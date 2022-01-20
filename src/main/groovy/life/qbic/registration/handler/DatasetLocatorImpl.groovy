@@ -38,6 +38,8 @@ class DatasetLocatorImpl implements DatasetLocator{
 
     private Optional<String> findNestedDataset() {
         File rootDir = new File(rootPath)
+        if (!rootDir.isDirectory())
+            return Optional.empty()
         String dirName = rootDir.getName()
         /*
         Now we iterate through the list of child elements in the folder, and search for the directory name appearances.
