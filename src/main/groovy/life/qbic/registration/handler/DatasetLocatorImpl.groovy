@@ -33,7 +33,7 @@ class DatasetLocatorImpl implements DatasetLocator{
      */
     @Override
     String getPathToDatasetFolder() {
-        return findNestedDataset().orElseGet(() -> rootPath)
+        return findNestedDataset().orElse(this.rootPath)
     }
 
     private Optional<String> findNestedDataset() {

@@ -3,27 +3,21 @@ package life.qbic.registration
 import ch.systemsx.cisd.etlserver.registrator.api.v2.AbstractJavaDataSetRegistrationDropboxV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import groovy.util.logging.Log4j2
-import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DataParserException
+import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DatasetValidationException
-import life.qbic.registration.handler.DatasetLocator
-import life.qbic.registration.handler.DatasetLocatorImpl
-import life.qbic.registration.handler.DatasetParserHandler
-import life.qbic.registration.handler.RegistrationException
-import life.qbic.registration.handler.RegistrationHandler
-import life.qbic.registration.handler.Registry
+import life.qbic.registration.handler.*
 import life.qbic.utils.BioinformaticAnalysisParser
 import life.qbic.utils.MaxQuantParser
 
-import java.nio.file.Path
 import java.nio.file.Paths
 
 @Log4j2
 class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
     static List<DatasetParser<?>> listOfParsers = [
-            new BioinformaticAnalysisParser(),
-            new MaxQuantParser()
+            new MaxQuantParser(),
+            new BioinformaticAnalysisParser()
     ] as List<DatasetParser<?>>
 
     @Override
@@ -34,8 +28,8 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
         DatasetLocator locator = DatasetLocatorImpl.of(relevantData)
         String pathToDatasetFolder = locator.getPathToDatasetFolder()
-
-        log.info("Processing incoming dataset '${pathToDatasetFolder}'...")
+        log.info("Incoming dataset '$relevantData'")
+        log.info("Indentiefied dataset location in '${pathToDatasetFolder}'...")
 
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(Paths.get(pathToDatasetFolder))
@@ -52,17 +46,19 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         )
 
         try {
-            registry.executeRegistration(transaction, relevantData)
+            registry.executeRegistration(transaction, Paths.get(pathToDatasetFolder))
         } catch (RegistrationException e) {
             log.error(e.getMessage())
             throw new RegistrationException("Could not register data! Manual intervention is needed.")
         }
     }
 
-    private static logExceptionReport(List<Exception> observedExceptions) {
+    private static logExceptionReport(Map<String, Exception> observedExceptions) {
         log.error("Detailed exception report:")
         log.error("start---------------------")
-        for (Exception exception : observedExceptions) {
+        for (String parser : observedExceptions.keySet()) {
+            log.error("Report for parser: " + parser)
+            Exception exception = observedExceptions.get(parser)
             switch (exception) {
                 case DataParserException:
                     log.error(exception.getMessage())
@@ -73,6 +69,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
                 default:
                     log.error(exception.stackTrace.join("\n"))
             }
+            log.error("######")
         }
         log.error("end-----------------------")
     }

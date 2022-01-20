@@ -27,7 +27,7 @@ class DatasetParserHandler {
     /**
      * Provides access to all observed exceptions during the prude force parsing attempt
      */
-    final List<Exception> observedExceptions
+    final Map<String, Exception> observedExceptions
 
     /**
      * Creates an instance of a parser handler object with a given list of
@@ -38,7 +38,7 @@ class DatasetParserHandler {
     DatasetParserHandler(List<DatasetParser<?>> listOfParsers) {
         Objects.requireNonNull(listOfParsers, "List must not be null.")
         dataSetParserList = listOfParsers
-        observedExceptions = []
+        observedExceptions = [:]
     }
 
     /**
@@ -63,13 +63,13 @@ class DatasetParserHandler {
         Iterator<DatasetParser> dataSetIterator = dataSetParserList.iterator()
         Optional<?> result = Optional.empty()
         while (dataSetIterator.hasNext()) {
+            DatasetParser parser = dataSetIterator.next()
             try {
-                DatasetParser parser = dataSetIterator.next()
                 result = Optional.of(parser.parseFrom(root))
             } catch (DataParserException e) {
-                observedExceptions << e
+                observedExceptions.put(parser.getClass().getCanonicalName(), e)
             } catch (DatasetValidationException e){
-                observedExceptions << e
+                observedExceptions.put(parser.getClass().getCanonicalName(), e)
             }
             if (result.isPresent())
                 return result
