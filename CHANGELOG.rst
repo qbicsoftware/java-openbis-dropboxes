@@ -4,16 +4,20 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
-1.2.0 (2021-09-14)
+1.2.0 (2022-01-20)
 ------------------
 
 **Added**
+
+* New DatasetLocator, that helps with the identification of the actual dataset folder in cases of complex nested structures
+* Increased verbosity in logging parser errors
 
 **Fixed**
 
 **Dependencies**
 
 **Deprecated**
+
 
 1.1.5 (2021-09-14)
 ------------------
