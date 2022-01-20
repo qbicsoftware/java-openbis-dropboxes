@@ -6,6 +6,8 @@ import groovy.util.logging.Log4j2
 import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
+import life.qbic.registration.handler.DatasetLocator
+import life.qbic.registration.handler.DatasetLocatorImpl
 import life.qbic.registration.handler.DatasetParserHandler
 import life.qbic.registration.handler.RegistrationException
 import life.qbic.registration.handler.RegistrationHandler
@@ -14,6 +16,7 @@ import life.qbic.utils.BioinformaticAnalysisParser
 import life.qbic.utils.MaxQuantParser
 
 import java.nio.file.Path
+import java.nio.file.Paths
 
 @Log4j2
 class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
@@ -27,12 +30,15 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
     void process(IDataSetRegistrationTransactionV2 transaction) {
         String incomingPath = transaction.getIncoming().getAbsolutePath()
         String incomingName = transaction.getIncoming().getName()
+        String relevantData = new File(incomingPath, incomingName).getAbsolutePath()
 
-        Path relevantData = new File(incomingPath, incomingName).toPath()
-        log.info("Processing incoming dataset '${relevantData.toString()}'...")
+        DatasetLocator locator = DatasetLocatorImpl.of(relevantData)
+        String pathToDatasetFolder = locator.getPathToDatasetFolder()
+
+        log.info("Processing incoming dataset '${pathToDatasetFolder}'...")
 
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
-        Optional<?> result = handler.parseFrom(relevantData)
+        Optional<?> result = handler.parseFrom(Paths.get(pathToDatasetFolder))
 
         Object concreteResult = result.orElseThrow({
             logExceptionReport(handler.getObservedExceptions())
