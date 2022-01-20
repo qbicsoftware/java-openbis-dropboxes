@@ -23,7 +23,7 @@ package life.qbic.registration.handler
  *            |- data1.txt
  *            |- data2.txt
  *
- * @since
+ * @since 1.3.0
  */
 interface DatasetLocator {
 
@@ -31,6 +31,7 @@ interface DatasetLocator {
      * Returns the top level absolute path of the dataset. In a flat structure, it returns
      * the top level folder, in the assumption that the dataset folder is not nested.
      * @return the absolute dataset folder path
+     * @since 1.3.0
      */
     String getPathToDatasetFolder()
 }
