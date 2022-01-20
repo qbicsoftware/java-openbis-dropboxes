@@ -4,7 +4,7 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
-1.3.0 (2022-01-20)
+1.2.0 (2022-01-20)
 ------------------
 
 **Added**
@@ -17,17 +17,6 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Deprecated**
 
-
-1.2.0 (2021-09-14)
-------------------
-
-**Added**
-
-**Fixed**
-
-**Dependencies**
-
-**Deprecated**
 
 1.1.5 (2021-09-14)
 ------------------
