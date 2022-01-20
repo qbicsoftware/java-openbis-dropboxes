@@ -10,6 +10,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 **Added**
 
 * New DatasetLocator, that helps with the identification of the actual dataset folder in cases of complex nested structures
+* Increased verbosity in logging parser errors
 
 **Fixed**
 
