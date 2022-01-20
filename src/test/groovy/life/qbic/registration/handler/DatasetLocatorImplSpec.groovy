@@ -3,13 +3,6 @@ package life.qbic.registration.handler
 import spock.lang.Shared
 import spock.lang.Specification
 
-/**
- * <b><class short description - 1 Line!></b>
- *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
- */
 class DatasetLocatorImplSpec extends Specification {
 
     @Shared
@@ -27,7 +20,7 @@ class DatasetLocatorImplSpec extends Specification {
         setupFlatDatasetExample()
     }
 
-    def "Non absolute path shall return an IllegalArgumentException"() {
+    def "Given a relative path, when a DatasetLocator is created then an IllegalArgumentException is thrown"() {
         when:
         DatasetLocator locator = DatasetLocatorImpl.of(relativePathExample)
 
@@ -35,7 +28,7 @@ class DatasetLocatorImplSpec extends Specification {
         thrown(IllegalArgumentException.class)
     }
 
-    def "Given an absolute path shall successfully create an instance of this class"() {
+    def "Given an absolute path, when a DatasetLocator is created then an instance of this class is returned"() {
         when:
         DatasetLocator locator = DatasetLocatorImpl.of(nestedDataStructureExample)
 
@@ -43,7 +36,7 @@ class DatasetLocatorImplSpec extends Specification {
         noExceptionThrown()
     }
 
-    def "Given an nested structure, return the actual dataset absolute path"() {
+    def "Given a nested structure, when the path to the dataset folder is requested, return the absolute path to the parent folder"() {
         given:
         DatasetLocator locator = DatasetLocatorImpl.of(nestedDataStructureExample)
 
@@ -56,7 +49,7 @@ class DatasetLocatorImplSpec extends Specification {
         new File(datasetPath).getParent().equalsIgnoreCase(nestedDataStructureExample)
     }
 
-    def "Given an flat structure, return the actual root dataset absolute path"() {
+    def "Given a flat structure, when the path to the dataset folder is requested, return the given path"() {
         given:
         DatasetLocator locator = DatasetLocatorImpl.of(flatDataStructureExample)
 
