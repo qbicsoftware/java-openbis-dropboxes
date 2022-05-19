@@ -4,6 +4,20 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.3.0 (2022-05-18)
+------------------
+
+**Added**
+
+* Handles change in maxquant data structure, uses latest data model and core utils libraries
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
+
 1.2.0 (2022-01-21)
 ------------------
 
