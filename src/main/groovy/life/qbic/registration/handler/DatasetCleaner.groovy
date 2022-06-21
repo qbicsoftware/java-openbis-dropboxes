@@ -16,5 +16,4 @@ interface DatasetCleaner {
      */
     void removeUnwantedFiles(Path root)
 
-
 }
