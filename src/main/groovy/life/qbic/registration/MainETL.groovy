@@ -39,6 +39,14 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
             throw new RegistrationException("Data structure could not be parsed.")
         })
 
+        DatasetCleaner cleaner = new HiddenFilesCleaner()
+        try {
+            cleaner.removeUnwantedFiles(Paths.get(pathToDatasetFolder))
+        } catch (IOException e) {
+            log.error(e.getMessage())
+            throw new RegistrationException("Error when deleting hidden file.")
+        }
+
         Registry registry =  RegistrationHandler.getRegistryFor(concreteResult).orElseThrow(
                 {
                     throw new RegistrationException("No registry found for data structure.")
