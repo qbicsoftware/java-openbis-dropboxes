@@ -15,7 +15,7 @@ class HiddenFilesCleaner implements DatasetCleaner {
      */
     @Override
     void clean(Path datasetRoot) {
-            Files.walk(root).forEach(path -> {
+            Files.walk(datasetRoot).forEach(path -> {
                 if(path.toFile().isHidden()) {
                     path.toFile().delete()
                 }
