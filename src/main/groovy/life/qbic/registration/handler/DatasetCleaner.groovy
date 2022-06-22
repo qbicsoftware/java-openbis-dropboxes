@@ -11,9 +11,9 @@ interface DatasetCleaner {
     /**
      * <p>Tries to remove unwanted files from a file structure.<p>
      *
-     * @param root the top level path of the directory with the file structure to be parsed.
+     * @param datasetRoot the top level path of the directory with the file structure to be cleaned.
      * @since 1.5.0
      */
-    void removeUnwantedFiles(Path root)
+    void clean(Path datasetRoot)
 
 }

@@ -43,7 +43,7 @@ class HiddenFilesCleanerSpec extends Specification {
         visibleFiles.add(level3)
 
         when:
-        cleaner.removeUnwantedFiles(tempDir.toPath())
+        cleaner.clean(tempDir.toPath())
 
         then: "the result must not contain the hidden file, but all other files"
         for (File hidden : hiddenFiles) {

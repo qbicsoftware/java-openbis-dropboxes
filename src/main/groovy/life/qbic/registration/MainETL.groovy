@@ -41,7 +41,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
         DatasetCleaner cleaner = new HiddenFilesCleaner()
         try {
-            cleaner.removeUnwantedFiles(Paths.get(pathToDatasetFolder))
+            cleaner.clean(Paths.get(pathToDatasetFolder))
         } catch (IOException e) {
             log.error(e.getMessage())
             throw new RegistrationException("Error when deleting hidden file.")
