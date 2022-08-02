@@ -128,6 +128,12 @@ class MaxQuantResultRegistry implements Registry{
         def newAnalysisRunId = existingAnalysisRunIds ? existingAnalysisRunIds.last().nextId() : new AnalysisResultId(1)
         // New sample code /<space>/<project code>R<number>
         def newRunSampleId = "/${context.getProjectSpace().toString()}/${context.getProjectCode().toString()}${newAnalysisRunId.toString()}"
+        ISample sample = transaction.getSampleForUpdate(newRunSampleId)
+        while (sample != null) {
+            newAnalysisRunId = newAnalysisRunId.nextId()
+            newRunSampleId = "/${context.getProjectSpace().toString()}/${context.getProjectCode().toString()}${newAnalysisRunId.toString()}"
+            sample = transaction.getSampleForUpdate(newRunSampleId)
+        }
         def newOpenBisSample = transaction.createNewSample(newRunSampleId, QSampleType.Q_WF_MS_MAXQUANT_RUN as String)
 
 
