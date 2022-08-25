@@ -10,7 +10,9 @@ import life.qbic.registration.handler.*
 import life.qbic.utils.BioinformaticAnalysisParser
 import life.qbic.utils.MaxQuantParser
 
+import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.function.Consumer
 
 @Log4j2
 class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
@@ -30,6 +32,10 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         String pathToDatasetFolder = locator.getPathToDatasetFolder()
         log.info("Incoming dataset '$relevantData'")
         log.info("Indentified dataset location in '${pathToDatasetFolder}'...")
+
+        if (isTarArchive(pathToDatasetFolder)) {
+            pathToDatasetFolder = extractTar(pathToDatasetFolder)
+        }
 
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(Paths.get(pathToDatasetFolder))
@@ -61,6 +67,15 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         }
     }
 
+    private static isTarArchive(String dataset) {
+        try {
+            new TarArchive(Paths.get(dataset))
+            return true
+        } catch (IllegalArgumentException ignored) {
+            return false
+        }
+    }
+
     private static logExceptionReport(Map<String, Exception> observedExceptions) {
         log.error("Detailed exception report:")
         log.error("start---------------------")
@@ -86,5 +101,26 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         for(String message : exception.getAllExceptions()) {
             log.error("Validation exception: ${message}.")
         }
+    }
+
+    private static String extractTar(String datasetPath) {
+        Path dataset = Paths.get(datasetPath)
+        TarArchive archive = new TarArchive(dataset)
+        Path parentDir = dataset.getParent()
+        Path extractionDir = Paths.get(parentDir.toAbsolutePath().toString(), "tmp_extraction")
+        new File(extractionDir.toAbsolutePath().toString()).mkdir()
+        TarArchiveHandler.extractTo(archive, extractionDir, new Consumer<TarExtractionResult>() {
+            @Override
+            void accept(TarExtractionResult tarExtractionResult) {
+                log.info("Extracted tar archive " + tarExtractionResult.archive().name() + "successfully")
+            }
+        }, new Consumer<TarExtractionFailure>() {
+            @Override
+            void accept(TarExtractionFailure tarExtractionFailure) {
+                log.error(tarExtractionFailure.description())
+                throw new RegistrationException("Unpacking tar archive failed!",)
+            }
+        })
+        return extractionDir
     }
 }
