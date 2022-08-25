@@ -29,7 +29,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         DatasetLocator locator = DatasetLocatorImpl.of(relevantData)
         String pathToDatasetFolder = locator.getPathToDatasetFolder()
         log.info("Incoming dataset '$relevantData'")
-        log.info("Indentiefied dataset location in '${pathToDatasetFolder}'...")
+        log.info("Indentified dataset location in '${pathToDatasetFolder}'...")
 
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
         Optional<?> result = handler.parseFrom(Paths.get(pathToDatasetFolder))
