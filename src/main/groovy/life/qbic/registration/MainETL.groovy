@@ -31,7 +31,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         DatasetLocator locator = DatasetLocatorImpl.of(relevantData)
         String pathToDatasetFolder = locator.getPathToDatasetFolder()
         log.info("Incoming dataset '$relevantData'")
-        log.info("Indentified dataset location in '${pathToDatasetFolder}'...")
+        log.info("Identified dataset location in '${pathToDatasetFolder}'...")
 
         if (isTarArchive(pathToDatasetFolder)) {
             log.info("Found TAR archive dataset")
