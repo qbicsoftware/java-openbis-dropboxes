@@ -6,13 +6,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.function.Consumer
 
-/**
- * <b><class short description - 1 Line!></b>
- *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
- */
 class TarArchiveHandlerSpec extends Specification {
 
     static Path VALID_TAR_ARCHIVE = Paths.get(getClass().getResource("/validArchive.tar").toURI())
