@@ -50,7 +50,7 @@ class TarArchiveHandlerSpec extends Specification {
         TarExtractionFailure result
 
         when:
-        TarArchiveHandler.extractTo(archive, Paths.get("Does/not/exist"),  () -> {}, new Consumer<TarExtractionFailure>() {
+        TarArchiveHandler.extract(archive, Paths.get("Does/not/exist"),  () -> {}, new Consumer<TarExtractionFailure>() {
             @Override
             void accept(TarExtractionFailure tarExtractionFailure) {
                 result = tarExtractionFailure

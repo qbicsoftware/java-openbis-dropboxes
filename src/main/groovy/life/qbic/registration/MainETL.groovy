@@ -34,6 +34,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         log.info("Indentified dataset location in '${pathToDatasetFolder}'...")
 
         if (isTarArchive(pathToDatasetFolder)) {
+            log.info("Found TAR archive dataset")
             pathToDatasetFolder = extractTar(pathToDatasetFolder)
         }
 
@@ -108,8 +109,12 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         TarArchive archive = new TarArchive(dataset)
         Path parentDir = dataset.getParent()
         Path extractionDir = Paths.get(parentDir.toAbsolutePath().toString(), "tmp_extraction")
+        log.info("Extracting tar archive content to: " + extractionDir.toAbsolutePath().toString())
+
+        // creates the destination directory for extraction
         new File(extractionDir.toAbsolutePath().toString()).mkdir()
-        TarArchiveHandler.extractTo(archive, extractionDir, new Consumer<TarExtractionResult>() {
+
+        TarArchiveHandler.extract(archive, extractionDir, new Consumer<TarExtractionResult>() {
             @Override
             void accept(TarExtractionResult tarExtractionResult) {
                 log.info("Extracted tar archive " + tarExtractionResult.archive().name() + "successfully")

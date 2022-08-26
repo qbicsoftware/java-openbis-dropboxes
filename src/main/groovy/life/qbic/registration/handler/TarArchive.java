@@ -5,16 +5,23 @@ import static java.util.Objects.requireNonNull;
 import java.nio.file.Path;
 
 /**
- * <b><class short description - 1 Line!></b>
+ * <b>Tar Archive</b>
+ * <p>
+ * A tape-archive like package structure of file content.
  *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
+ * @since 1.5.0
  */
 public class TarArchive {
 
   private final Path path;
 
+  /**
+   * Creates an instance of a {@link TarArchive} object.
+   *
+   * @param path the path of the tar archive file
+   * @throws IllegalArgumentException when the file path does not link to a tar archive
+   * @since 1.5.0
+   */
   public TarArchive(Path path) throws IllegalArgumentException {
     requireNonNull(path, "Path must not be null");
     if (!path.getFileName().toString().endsWith(".tar")) {
@@ -23,10 +30,22 @@ public class TarArchive {
     this.path = path;
   }
 
+  /**
+   * Queries the path of the tar archive file
+   *
+   * @return the tar archive file path
+   * @since 1.5.0
+   */
   public Path path() {
     return path;
   }
 
+  /**
+   * Queries the name of the tar archive file
+   *
+   * @return the tar archive file name (excluding the file type suffix)
+   * @since 1.5.0
+   */
   public String name() {
     return path.getFileName().toString().replace(".tar$", "");
   }

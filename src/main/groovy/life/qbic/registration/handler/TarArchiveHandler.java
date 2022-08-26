@@ -9,23 +9,56 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
- * <b><class short description - 1 Line!></b>
+ * <b>Tar Archive Handler</b>
+ * <p>
+ * Manages extraction of tar archives.
+ * <p>
+ * The handler utilises the UNIX command line tool <code>tar</code> to perform the actual extraction
+ * of the archive.
+ * <p>
+ * The handler creates a new sub-process for every execution of the public extraction methods and
+ * waiting for the process to exit. For error handling, the exit codes are used to determine, if the
+ * extraction was successful or not.
+ * <p>
+ * Every exit code value different from <code>0</code> will be regarded as failure and the error output stream of
+ * the process will be parsed and provided in the returned {@link TarExtractionFailure} object.
+ * <p>
+ * Find more information about the command line tool on the gnu.org homepage:
+ * <a href="https://www.gnu.org/software/tar/">https://www.gnu.org/software/tar/</a>
  *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
+ * @since 1.5.0
  */
 public class TarArchiveHandler {
 
   private static final String TAR_COMMAND = "tar -xf %s -C %s";
 
-  public static void extractTo(TarArchive archive, Path destination, Consumer<TarExtractionResult> onSuccess,
+  /**
+   * Extracts a tar archive's content to a given destination.
+   *
+   * @param archive     the tar archive to extract
+   * @param destination the destination for the extracted content. This directory must exist and
+   *                    provided with write access
+   * @param onSuccess   callback function that is executed when the extraction was successful
+   * @param onError     callback function that is executed when the extraction failed
+   * @since 1.5.0
+   */
+  public static void extract(TarArchive archive, Path destination,
+      Consumer<TarExtractionResult> onSuccess,
       Consumer<TarExtractionFailure> onError) {
     triggerExtractionTo(archive, destination, onSuccess, onError);
   }
+
+  /**
+   * Extracts a tar archive's content to the parent directory of the archive.
+   *
+   * @param archive   the tar archive to extract
+   * @param onSuccess callback function that is executed when the extraction was successful
+   * @param onError   callback function that is executed when the extraction failed
+   * @since 1.5.0
+   */
   public static void extract(TarArchive archive, Consumer<TarExtractionResult> onSuccess,
       Consumer<TarExtractionFailure> onError) {
-    extractTo(archive, archive.path().getParent(), onSuccess, onError);
+    extract(archive, archive.path().getParent(), onSuccess, onError);
   }
 
   private static void triggerExtractionTo(TarArchive archive, Path destination,
@@ -49,7 +82,8 @@ public class TarArchiveHandler {
     }
   }
 
-  private static void reportExtractionFailure(TarArchive archive, InputStream errorStream, Consumer<TarExtractionFailure> onFailure) {
+  private static void reportExtractionFailure(TarArchive archive, InputStream errorStream,
+      Consumer<TarExtractionFailure> onFailure) {
     String errorInfo = readInputStream(errorStream);
     TarExtractionFailure failure = new TarExtractionFailure(archive, "Failed", errorInfo);
     onFailure.accept(failure);
