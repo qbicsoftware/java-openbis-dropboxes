@@ -5,7 +5,7 @@ package life.qbic.registration.handler;
  * <p>
  * Information container for tar extraction failure reporting
  *
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class TarExtractionFailure {
 

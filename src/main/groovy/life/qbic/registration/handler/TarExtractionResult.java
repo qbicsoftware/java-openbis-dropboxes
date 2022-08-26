@@ -7,7 +7,7 @@ import java.nio.file.Path;
  * <p>
  * Information container for successful tar extraction results
  *
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class TarExtractionResult {
 

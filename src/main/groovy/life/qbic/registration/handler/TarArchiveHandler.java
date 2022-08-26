@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * Find more information about the command line tool on the gnu.org homepage:
  * <a href="https://www.gnu.org/software/tar/">https://www.gnu.org/software/tar/</a>
  *
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class TarArchiveHandler {
 
@@ -40,7 +40,7 @@ public class TarArchiveHandler {
    *                    provided with write access
    * @param onSuccess   callback function that is executed when the extraction was successful
    * @param onError     callback function that is executed when the extraction failed
-   * @since 1.5.0
+   * @since 1.6.0
    */
   public static void extract(TarArchive archive, Path destination,
       Consumer<TarExtractionResult> onSuccess,
@@ -54,7 +54,7 @@ public class TarArchiveHandler {
    * @param archive   the tar archive to extract
    * @param onSuccess callback function that is executed when the extraction was successful
    * @param onError   callback function that is executed when the extraction failed
-   * @since 1.5.0
+   * @since 1.6.0
    */
   public static void extract(TarArchive archive, Consumer<TarExtractionResult> onSuccess,
       Consumer<TarExtractionFailure> onError) {

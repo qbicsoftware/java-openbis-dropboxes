@@ -9,7 +9,7 @@ import java.nio.file.Path;
  * <p>
  * A tape-archive like package structure of file content.
  *
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class TarArchive {
 
@@ -20,7 +20,7 @@ public class TarArchive {
    *
    * @param path the path of the tar archive file
    * @throws IllegalArgumentException when the file path does not link to a tar archive
-   * @since 1.5.0
+   * @since 1.6.0
    */
   public TarArchive(Path path) throws IllegalArgumentException {
     requireNonNull(path, "Path must not be null");
@@ -34,7 +34,7 @@ public class TarArchive {
    * Queries the path of the tar archive file
    *
    * @return the tar archive file path
-   * @since 1.5.0
+   * @since 1.6.0
    */
   public Path path() {
     return path;
@@ -44,7 +44,7 @@ public class TarArchive {
    * Queries the name of the tar archive file
    *
    * @return the tar archive file name (excluding the file type suffix)
-   * @since 1.5.0
+   * @since 1.6.0
    */
   public String name() {
     return path.getFileName().toString().replace(".tar$", "");
