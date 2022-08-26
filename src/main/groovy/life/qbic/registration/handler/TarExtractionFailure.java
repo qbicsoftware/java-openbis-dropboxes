@@ -1,11 +1,11 @@
 package life.qbic.registration.handler;
 
 /**
- * <b><class short description - 1 Line!></b>
+ * <b>Tar Extraction Failure</b>
+ * <p>
+ * Information container for tar extraction failure reporting
  *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
+ * @since 1.5.0
  */
 public class TarExtractionFailure {
 

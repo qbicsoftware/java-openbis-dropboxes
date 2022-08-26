@@ -3,11 +3,11 @@ package life.qbic.registration.handler;
 import java.nio.file.Path;
 
 /**
- * <b><class short description - 1 Line!></b>
+ * <b>Tar Extraction Result</b>
+ * <p>
+ * Information container for successful tar extraction results
  *
- * <p><More detailed description - When to use, what it solves, etc.></p>
- *
- * @since <version tag>
+ * @since 1.5.0
  */
 public class TarExtractionResult {
 
