@@ -305,6 +305,7 @@ class NfCoreResultRegistry implements Registry {
     Returns the analysis type.
      */
     private Optional<QExperimentType> getAnalysisType(String runId) {
+        log.info("Querying nf-core pipeline information for run id: " + runId)
         String pipelineName = nfTower.getPipelineName(runId).orElseThrow({
             throw new RegistrationException("Could not determine pipeline name from Nextflow Tower for run id $runId")})
         return determineAnalysisTypeFrom(pipelineName)
