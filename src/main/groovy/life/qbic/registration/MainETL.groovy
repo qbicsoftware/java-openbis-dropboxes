@@ -117,7 +117,7 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         TarArchiveHandler.extract(archive, extractionDir, new Consumer<TarExtractionResult>() {
             @Override
             void accept(TarExtractionResult tarExtractionResult) {
-                log.info("Extracted tar archive " + tarExtractionResult.archive().name() + "successfully")
+                log.info("Extracted tar archive " + tarExtractionResult.archive().name() + " successfully")
             }
         }, new Consumer<TarExtractionFailure>() {
             @Override
