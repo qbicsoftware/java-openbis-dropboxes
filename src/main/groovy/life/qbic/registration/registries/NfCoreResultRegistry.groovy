@@ -219,6 +219,10 @@ class NfCoreResultRegistry implements Registry {
                 searchService.listExperiments("/${context.getProjectSpace().toString()}/${sampleIdList[0].getProjectCode().toString()}") as List<IExperimentImmutable>
         List<ExperimentId> existingExperimentIds = []
         for (experiment in existingExperiments) {
+            // Ignore the INFO experiment
+            if (experiment.experimentIdentifier.containsIgnoreCase("_info")) {
+                continue
+            }
             try {
                 ExperimentId id = ExperimentId.parseFrom(experiment.experimentIdentifier)
                 existingExperimentIds.add(id)
