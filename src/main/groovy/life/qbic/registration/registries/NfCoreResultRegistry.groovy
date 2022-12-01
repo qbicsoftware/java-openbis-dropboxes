@@ -220,7 +220,7 @@ class NfCoreResultRegistry implements Registry {
         List<ExperimentId> existingExperimentIds = []
         for (experiment in existingExperiments) {
             // Ignore the INFO experiment
-            if (experiment.experimentIdentifier.containsIgnoreCase("info")) {
+            if (experiment.experimentIdentifier.containsIgnoreCase("_info")) {
                 continue
             }
             try {
