@@ -55,7 +55,7 @@ class NfCoreResultRegistry implements Registry {
         Map<String, QExperimentType> tmpMap = new HashMap<>()
         tmpMap.put("nf-core/atacseq", QExperimentType.Q_WF_NGS_ATAC_SEQ)
         tmpMap.put("nf-core/ampliseq", QExperimentType.Q_WF_NGS_16S_AMPLICON_SEQ)
-        tmpMap.put("nf-core/bcellmacgic", QExperimentType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ)
+        tmpMap.put("nf-core/airrflow", QExperimentType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ)
         tmpMap.put("nf-core/chipseq", QExperimentType.Q_WF_NGS_CHIP_SEQ)
         tmpMap.put("nf-core/eager", QExperimentType.Q_WF_NGS_ANCIENT_DNA_SEQ)
         tmpMap.put("nf-core/hlatyping", QExperimentType.Q_WF_NGS_HLATYPING)
@@ -77,7 +77,7 @@ class NfCoreResultRegistry implements Registry {
         Map<String, QSampleType> tmpMap = new HashMap<>()
         tmpMap.put("nf-core/atacseq", QSampleType.Q_WF_NGS_ATAC_SEQ_RUN)
         tmpMap.put("nf-core/ampliseq", QSampleType.Q_WF_NGS_16S_AMPLICON_SEQ_RUN)
-        tmpMap.put("nf-core/bcellmacgic", QSampleType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RUN)
+        tmpMap.put("nf-core/airrflow", QSampleType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RUN)
         tmpMap.put("nf-core/chipseq", QSampleType.Q_WF_NGS_CHIP_SEQ_RUN)
         tmpMap.put("nf-core/eager", QSampleType.Q_WF_NGS_ANCIENT_DNA_SEQ_RUN)
         tmpMap.put("nf-core/hlatyping", QSampleType.Q_WF_NGS_HLATYPING_RUN)
@@ -99,7 +99,7 @@ class NfCoreResultRegistry implements Registry {
         Map<String, QDatasetType> tmpMap = new HashMap<>()
         tmpMap.put("nf-core/atacseq", QDatasetType.Q_WF_NGS_ATAC_SEQ_RESULTS)
         tmpMap.put("nf-core/ampliseq", QDatasetType.Q_WF_NGS_16S_AMPLICON_SEQ_RESULTS)
-        tmpMap.put("nf-core/bcellmacgic", QDatasetType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RESULTS)
+        tmpMap.put("nf-core/airrflow", QDatasetType.Q_WF_NGS_BCELL_REPERTOIRE_SEQ_RESULTS)
         tmpMap.put("nf-core/chipseq", QDatasetType.Q_WF_NGS_CHIP_SEQ_RESULTS)
         tmpMap.put("nf-core/eager", QDatasetType.Q_WF_NGS_ANCIENT_DNA_SEQ_RESULTS)
         tmpMap.put("nf-core/hlatyping", QDatasetType.Q_WF_NGS_HLATYPING_RESULTS)
@@ -158,11 +158,11 @@ class NfCoreResultRegistry implements Registry {
             throw new RegistrationException("Could not determine workflow run id from Tower.")})
 
         def analysisType = getAnalysisType(workflowRunId).orElseThrow({
-            throw new RegistrationException("Could not determine analysis type for run ${runId}.")
+            throw new RegistrationException("Could not determine analysis type for run ${workflowRunId}.")
         })
 
         this.usedNfCorePipeline = nfTower.getPipelineName(workflowRunId).orElseThrow({
-            throw new RegistrationException("Could not determine pipeline name for run ${runId}.")
+            throw new RegistrationException("Could not determine pipeline name for run ${workflowRunId}.")
         })
 
         try {
