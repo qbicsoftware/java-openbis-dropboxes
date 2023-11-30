@@ -35,7 +35,13 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
 
         if (isTarArchive(pathToDatasetFolder)) {
             log.info("Found TAR archive dataset")
-            pathToDatasetFolder = extractTar(pathToDatasetFolder)
+            String tmpFolder = extractTar(pathToDatasetFolder)
+            Optional<String> dataRootDirResult = getExtractedRootDir(tmpFolder)
+            pathToDatasetFolder = dataRootDirResult.orElseThrow({
+                log.error("TAR archive does not contain a necessary root folder.  Please make sure " +
+                        "to tar the outer folder when transferring complex data.")
+                throw new RegistrationException("Could not find root folder in tar.")
+            })
         }
 
         DatasetParserHandler handler = new DatasetParserHandler(listOfParsers)
@@ -75,6 +81,18 @@ class MainETL extends AbstractJavaDataSetRegistrationDropboxV2 {
         } catch (IllegalArgumentException ignored) {
             return false
         }
+    }
+
+    private static Optional<String> getExtractedRootDir(String tmpFolderPath) {
+        File tmpDir = new File(tmpFolderPath)
+        String[] childList = tmpDir.list();
+        if(childList.size() == 1) {
+            String childPath = tmpDir.getAbsolutePath() + "/" + childList[0];
+            if (new File(childPath).isDirectory()) {
+                return Optional.of(childPath)
+            }
+        }
+        return Optional.empty()
     }
 
     private static logExceptionReport(Map<String, Exception> observedExceptions) {
