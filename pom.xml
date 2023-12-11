@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>java-openbis-dropboxes</artifactId>
-  <version>1.6.1</version> <!-- <<QUBE_FORCE_BUMP>> -->
+  <version>1.7.0</version> <!-- <<QUBE_FORCE_BUMP>> -->
   <groupId>life.qbic</groupId>
   <name>OpenBIS ETL routines written in Java</name>
   <url>http://github.com/qbicsoftware/java-openbis-dropboxes</url>
